@@ -1,0 +1,18 @@
+---
+description: Após commit and push, validar CI no GitHub e corrigir se falhar
+alwaysApply: true
+---
+
+# Commit, push e verificação de CI
+
+Quando o usuário pedir **commit and push**, `/commit-push`, ou equivalente:
+
+1. Fazer commit e push normalmente (versão + `docs/release-history.json` se mudança visível ao usuário).
+2. Rodar `.\gradlew test` antes do commit; E2E (`connectedDebugAndroidTest`) se mudou `ui/`.
+3. **Após o push**, verificar o workflow **Android CI** no GitHub:
+   - PAT em `C:\repo\secrets\github\pat.txt` (linha `ghp_`; nunca commitar).
+   - API: `GET /repos/farukzahra/fumei/actions/runs?per_page=3` com `Authorization: Bearer <PAT>`.
+4. Se **test** ou **build** falhar: reproduzir localmente, corrigir, novo commit/push e reverificar CI.
+5. Informar o usuário: link do run, status final (sucesso ou o que foi corrigido).
+
+Não encerrar só com "push feito" sem checar o Actions quando o pedido incluir commit and push.

@@ -1,0 +1,23 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+*.keystore
+!debug.keystore
+
+# Play Store binaries (keep docs, not large artifacts)
+docs/play-store/releases/*.apk
+docs/play-store/releases/*.aab
+
+# Secrets / local config
+local.properties
+**/secrets/
+KEYSTORE_INFO.md

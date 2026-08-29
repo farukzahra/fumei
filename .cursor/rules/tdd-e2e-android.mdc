@@ -1,0 +1,50 @@
+---
+description: TDD e E2E obrigatórios no app Android (Superpowers)
+alwaysApply: true
+---
+
+# TDD + E2E (Superpowers)
+
+Seguir as skills **test-driven-development** e **verification-before-completion** em toda feature, bugfix ou mudança de UI.
+
+## Ordem obrigatória
+
+1. **RED** — escrever teste que falha (unitário em `app/src/test/` ou E2E Compose em `app/src/androidTest/`)
+2. **Verificar RED** — rodar o teste e confirmar a falha esperada
+3. **GREEN** — código mínimo para passar
+4. **Verificar GREEN** — rodar testes de novo
+5. **REFACTOR** — limpar mantendo verde
+
+**Nunca** implementar UI/comportamento antes do teste. Nunca marcar tarefa como pronta sem evidência de execução.
+
+## Quando usar cada tipo
+
+| Mudança | Teste primeiro |
+|---------|------------------|
+| UI Compose (`ui/`, telas, botões, diálogos) | E2E em `app/src/androidTest/.../ui/` com `createComposeRule` |
+| Repository, DAO, lógica de data | Unitário em `app/src/test/` |
+| Bug de tela | E2E que reproduz o bug (falha) → fix → passa |
+
+## E2E Compose (padrão do projeto)
+
+- Arquivo: `app/src/androidTest/java/fumei/faruk/dev/br/ui/*E2ETest.kt`
+- Banco: `Room.inMemoryDatabaseBuilder` + `MainViewModel` real
+- Seletores: `testTag`, `contentDescription` ou texto visível — evitar seletores frágeis
+- Um comportamento por teste; nome descreve o fluxo (`fumeiButton_addsEntry...`)
+
+## Comandos de verificação (evidência antes de concluir)
+
+```bash
+.\gradlew test                          # unitários
+.\gradlew connectedDebugAndroidTest     # E2E (emulador/dispositivo ligado)
+```
+
+Ambos devem passar antes de dizer que está pronto.
+
+## Checklist de conclusão
+
+- [ ] Teste escrito **antes** da implementação
+- [ ] Vi o teste falhar pelo motivo certo (RED)
+- [ ] Implementação mínima (GREEN)
+- [ ] `test` + `connectedDebugAndroidTest` executados nesta sessão
+- [ ] Novo fluxo de UI tem caso E2E correspondente
