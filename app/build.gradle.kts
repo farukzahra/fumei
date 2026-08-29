@@ -9,7 +9,7 @@ import java.util.Properties
 import java.io.FileInputStream
 import java.io.InputStreamReader
 
-val keystorePropertiesFile = file("C:/repo/secrets/android/fumei-keystore.properties")
+val keystorePropertiesFile = rootProject.file("../secrets/android/fumei-keystore.properties")
 val keystoreProperties = Properties()
 if (keystorePropertiesFile.exists()) {
     FileInputStream(keystorePropertiesFile).use { stream ->
