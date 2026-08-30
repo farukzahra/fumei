@@ -1,0 +1,31 @@
+---
+description: Atualizar Sobre e release-history em toda mudança visível ao usuário
+alwaysApply: true
+---
+
+# Sobre e histórico de releases
+
+Toda alteração **visível ao usuário** (UI, fluxo, configuração, texto, comportamento) exige atualizar o **Sobre** (aba Mais) e o histórico de releases no mesmo trabalho.
+
+## Checklist obrigatório
+
+1. **`docs/release-history.json`** — nova entrada no topo (ou atualizar a versão em desenvolvimento) com `version`, `title`, `summary` em pt-BR, tom direto.
+2. **`app/src/main/assets/release-history.json`** — manter igual ao `docs/` (o Gradle copia no build; conferir `copyReleaseHistory`).
+3. **Tela Sobre (`AboutScreen.kt`)** — texto do hero/descrição alinhado ao que o app faz **agora**; não deixar copy desatualizada.
+4. **Versão do build** — se a mudança for release-worthy: `versionName` / `versionCode` em `app/build.gradle.kts` e `currentVersion` no JSON.
+5. **Teste E2E** — `aboutTab_*` em `FumeiAppE2ETest` deve refletir a estrutura atual do Mais (meta diária, histórico expansível, etc.).
+
+## O que entra no histórico
+
+- Novas telas, menus, campos de configuração
+- Redesign visual ou mudança de interação
+- Correções relevantes para quem usa o app
+
+## O que não precisa de entrada nova
+
+- Refactor interno sem mudança de comportamento
+- Só docs de agente/CI sem impacto no app
+
+## Tom dos textos
+
+Seguir skill **humanizer**: pt-BR, direto, sem travessão (—).

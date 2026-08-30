@@ -3,22 +3,22 @@ package fumei.faruk.dev.br.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import fumei.faruk.dev.br.data.PuffEntity
+import fumei.faruk.dev.br.data.DailyGoalStore
 import fumei.faruk.dev.br.data.PuffRepository
 import fumei.faruk.dev.br.data.TodayPuffData
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import kotlin.math.max
 
 class MainViewModel(
     private val repository: PuffRepository,
+    private val dailyGoalStore: DailyGoalStore,
 ) : ViewModel() {
     private val zone = ZoneId.systemDefault()
     private val locale = Locale.forLanguageTag("pt-BR")
@@ -27,13 +27,16 @@ class MainViewModel(
     private val dateHeaderFormatter = DateTimeFormatter.ofPattern("EEEE · d MMM", locale)
     private val dayFormatter = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", locale)
 
-    val uiState: StateFlow<TodayUiState> = repository.observeTodayWithYesterdayCount(zone)
-        .map(::mapToUiState)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = TodayUiState(),
-        )
+    val uiState: StateFlow<TodayUiState> = combine(
+        repository.observeTodayWithYesterdayCount(zone),
+        dailyGoalStore.observeDailyGoal(),
+    ) { data, dailyGoal ->
+        mapToUiState(data, dailyGoal)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = TodayUiState(),
+    )
 
     fun onFumeiClick() {
         viewModelScope.launch {
@@ -53,7 +56,7 @@ class MainViewModel(
         }
     }
 
-    private fun mapToUiState(data: TodayPuffData): TodayUiState {
+    private fun mapToUiState(data: TodayPuffData, dailyGoal: Int): TodayUiState {
         val puffs = data.puffs
         val today = Instant.now().atZone(zone).toLocalDate()
         val todayLabel = today.format(dayFormatter).replaceFirstChar { char ->
@@ -62,7 +65,6 @@ class MainViewModel(
         val dateHeader = today.format(dateHeaderFormatter)
             .uppercase(locale)
         val count = puffs.size
-        val goal = max(8, count)
         val delta = count - data.yesterdayCount
         val vsYesterdayLabel = when {
             delta > 0 -> "↗ +$delta vs ontem"
@@ -84,8 +86,9 @@ class MainViewModel(
             todayLabel = todayLabel,
             dateHeader = dateHeader,
             vsYesterdayLabel = vsYesterdayLabel,
-            progressLabel = "$count de $goal",
-            progressFraction = (count.toFloat() / goal).coerceIn(0f, 1f),
+            dailyGoal = DailyProgress.normalizedGoal(dailyGoal),
+            progressLabel = DailyProgress.label(count, dailyGoal),
+            progressFraction = DailyProgress.fraction(count, dailyGoal),
             entries = entries,
         )
     }
@@ -93,11 +96,12 @@ class MainViewModel(
 
 class MainViewModelFactory(
     private val repository: PuffRepository,
+    private val dailyGoalStore: DailyGoalStore,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(repository) as T
+            return MainViewModel(repository, dailyGoalStore) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -13,6 +13,7 @@ data class TodayUiState(
     val todayLabel: String = "",
     val dateHeader: String = "",
     val vsYesterdayLabel: String? = null,
+    val dailyGoal: Int = DailyProgress.DEFAULT_GOAL,
     val progressLabel: String = "",
     val progressFraction: Float = 0f,
     val entries: List<PuffListItem> = emptyList(),

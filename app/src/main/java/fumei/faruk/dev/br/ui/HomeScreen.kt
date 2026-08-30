@@ -1,10 +1,8 @@
 package fumei.faruk.dev.br.ui
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +40,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fumei.faruk.dev.br.ui.theme.AppColors
 import fumei.faruk.dev.br.ui.theme.AppSpacing
 import fumei.faruk.dev.br.ui.theme.FumeiTheme
@@ -96,6 +95,7 @@ fun HomeScreen(
             DiaHeader(
                 count = uiState.count,
                 progressFraction = uiState.progressFraction,
+                progressLabel = uiState.progressLabel,
                 diaLabel = uiState.dateHeader.ifBlank { uiState.todayLabel },
             )
         }
@@ -146,6 +146,7 @@ fun HomeScreen(
 private fun DiaHeader(
     count: Int,
     progressFraction: Float,
+    progressLabel: String,
     diaLabel: String,
     modifier: Modifier = Modifier,
 ) {
@@ -194,6 +195,15 @@ private fun DiaHeader(
             }
         }
         Spacer(modifier = Modifier.height(14.dp))
+        if (progressLabel.isNotBlank()) {
+            Text(
+                text = progressLabel,
+                style = FumeiType.body,
+                color = AppColors.Ember500,
+                modifier = Modifier.testTag("daily_progress_label"),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         if (diaLabel.isNotBlank()) {
             Text(
                 text = diaLabel,
@@ -205,7 +215,6 @@ private fun DiaHeader(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun RegistroRow(
     entry: PuffListItem,
@@ -214,17 +223,9 @@ private fun RegistroRow(
     onApagar: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var acoesVisiveis by remember { mutableStateOf(false) }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .combinedClickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = {},
-                onLongClick = { acoesVisiveis = !acoesVisiveis },
-            )
             .testTag("timeline_entry"),
         verticalAlignment = Alignment.Top,
     ) {
@@ -245,46 +246,40 @@ private fun RegistroRow(
             }
         }
         Spacer(modifier = Modifier.width(16.dp))
-        Column(
+        Row(
             modifier = Modifier
                 .weight(1f)
                 .padding(bottom = if (isLast) 0.dp else 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+            Text(
+                text = entry.timeLabel,
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(onClick = onEditar),
+                style = FumeiType.timestamp,
+                color = AppColors.Paper100,
+            )
+            IconButton(
+                onClick = onEditar,
+                modifier = Modifier.size(40.dp),
             ) {
-                Text(
-                    text = entry.timeLabel,
-                    style = FumeiType.timestamp,
-                    color = AppColors.Paper100,
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "Editar registro",
+                    tint = AppColors.Smoke400,
                 )
-                if (acoesVisiveis) {
-                    Row {
-                        IconButton(
-                            onClick = onEditar,
-                            modifier = Modifier.size(32.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Edit,
-                                contentDescription = "Editar registro",
-                                tint = AppColors.Smoke400,
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(4.dp))
-                        IconButton(
-                            onClick = onApagar,
-                            modifier = Modifier.size(32.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Delete,
-                                contentDescription = "Excluir registro",
-                                tint = AppColors.Ember300,
-                            )
-                        }
-                    }
-                }
+            }
+            IconButton(
+                onClick = onApagar,
+                modifier = Modifier.size(40.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Excluir registro",
+                    tint = AppColors.Ember300,
+                )
             }
         }
     }
@@ -298,6 +293,7 @@ private fun HomeScreenPreview() {
             uiState = TodayUiState(
                 count = 3,
                 dateHeader = "DOMINGO · 30 AGO",
+                progressLabel = "3 de 8",
                 progressFraction = 0.375f,
                 entries = listOf(
                     PuffListItem(1, "29/08/2026 14:49", "14:49", "Hoje", 1_756_489_740_000L),

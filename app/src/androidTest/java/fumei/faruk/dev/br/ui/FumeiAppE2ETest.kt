@@ -10,10 +10,8 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.performScrollTo
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,6 +19,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import fumei.faruk.dev.br.data.AppDatabase
 import fumei.faruk.dev.br.data.PuffEntity
 import fumei.faruk.dev.br.data.PuffRepository
+import fumei.faruk.dev.br.data.UserPreferencesRepository
 import fumei.faruk.dev.br.ui.theme.FumeiTheme
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -38,8 +37,10 @@ class FumeiAppE2ETest {
 
     private lateinit var database: AppDatabase
     private lateinit var repository: PuffRepository
+    private lateinit var dailyGoalStore: UserPreferencesRepository
     private lateinit var mainViewModel: MainViewModel
     private lateinit var statsViewModel: StatsViewModel
+    private lateinit var settingsViewModel: SettingsViewModel
 
     @Before
     fun setUp() {
@@ -48,8 +49,11 @@ class FumeiAppE2ETest {
             .allowMainThreadQueries()
             .build()
         repository = PuffRepository(database.puffDao())
-        mainViewModel = MainViewModel(repository)
+        dailyGoalStore = UserPreferencesRepository(context)
+        runBlocking { dailyGoalStore.setDailyGoal(8) }
+        mainViewModel = MainViewModel(repository, dailyGoalStore)
         statsViewModel = StatsViewModel(repository)
+        settingsViewModel = SettingsViewModel(dailyGoalStore)
     }
 
     @After
@@ -78,11 +82,22 @@ class FumeiAppE2ETest {
             composeTestRule.onAllNodesWithTag("timeline_entry").fetchSemanticsNodes().isNotEmpty()
         }
 
-        composeTestRule.onAllNodesWithTag("timeline_entry").onFirst()
-            .performTouchInput { longClick() }
-        composeTestRule.onNodeWithContentDescription("Editar registro").performClick()
+        composeTestRule.onAllNodesWithTag("timeline_entry").onFirst().performClick()
         composeTestRule.onNodeWithText("Editar registro").assertIsDisplayed()
         composeTestRule.onNodeWithText("Salvar").assertIsDisplayed()
+    }
+
+    @Test
+    fun timelineEntry_tapOpensEditDialog() {
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("fumei_button").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithContentDescription("Editar registro").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeTestRule.onNodeWithContentDescription("Editar registro").performClick()
+        composeTestRule.onNodeWithText("Editar registro").assertIsDisplayed()
     }
 
     @Test
@@ -91,11 +106,9 @@ class FumeiAppE2ETest {
 
         composeTestRule.onNodeWithTag("fumei_button").performClick()
         composeTestRule.waitUntil(timeoutMillis = 5_000) {
-            composeTestRule.onAllNodesWithTag("timeline_entry").fetchSemanticsNodes().isNotEmpty()
+            composeTestRule.onAllNodesWithContentDescription("Excluir registro").fetchSemanticsNodes().isNotEmpty()
         }
 
-        composeTestRule.onAllNodesWithTag("timeline_entry").onFirst()
-            .performTouchInput { longClick() }
         composeTestRule.onNodeWithContentDescription("Excluir registro").performClick()
         composeTestRule.onNodeWithText("Excluir registro?").assertIsDisplayed()
         composeTestRule.onNodeWithTag("confirm_delete_button").performClick()
@@ -130,14 +143,33 @@ class FumeiAppE2ETest {
     }
 
     @Test
-    fun aboutTab_showsVersionAndHistory() {
+    fun aboutTab_showsDailyGoalAndLatestHistory() {
         setFumeiApp(aboutState = sampleAboutState())
 
         composeTestRule.onNodeWithTag("nav_about").performClick()
         composeTestRule.onNodeWithTag("about_screen").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("daily_goal_card").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("daily_goal_value").assertIsDisplayed()
         composeTestRule.onNodeWithTag("about_version_name").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("about_pix_card").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithTag("about_history_1.4.0").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("about_history_toggle").performClick()
         composeTestRule.onNodeWithTag("about_history_1.3.0").performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun dailyGoalChange_updatesHomeProgressLabel() {
+        setFumeiApp(aboutState = sampleAboutState())
+
+        composeTestRule.onNodeWithTag("nav_about").performClick()
+        composeTestRule.onNodeWithTag("daily_goal_increase").performClick()
+        composeTestRule.onNodeWithTag("daily_goal_increase").performClick()
+
+        composeTestRule.onNodeWithTag("nav_home").performClick()
+        composeTestRule.onNodeWithTag("fumei_button").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithText("1 de 10").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithText("1 de 10").assertIsDisplayed()
     }
 
     private fun seedPuffsForCurrentMonth(count: Int) {
@@ -152,13 +184,19 @@ class FumeiAppE2ETest {
 
     private fun sampleAboutState(): AboutUiState {
         return AboutUiState(
-            versionName = "1.3.0",
-            versionCode = 4,
+            versionName = "1.4.0",
+            versionCode = 5,
+            dailyGoal = 8,
             entries = listOf(
+                fumei.faruk.dev.br.data.ReleaseHistoryEntry(
+                    version = "1.4.0",
+                    title = "Visual cinza e brasa",
+                    summary = "Meta diária e Mais reorganizado.",
+                ),
                 fumei.faruk.dev.br.data.ReleaseHistoryEntry(
                     version = "1.3.0",
                     title = "Estatísticas e Sobre",
-                    summary = "Menu inferior com Hoje, Estatísticas e Sobre.",
+                    summary = "Menu inferior com Hoje, Estatísticas e Mais.",
                 ),
             ),
         )
@@ -168,11 +206,12 @@ class FumeiAppE2ETest {
         composeTestRule.setContent {
             val homeState by mainViewModel.uiState.collectAsState()
             val statsState by statsViewModel.uiState.collectAsState()
-            FumeiTheme(darkTheme = false) {
+            val dailyGoal by settingsViewModel.dailyGoal.collectAsState()
+            FumeiTheme {
                 FumeiApp(
                     homeState = homeState,
                     statsState = statsState,
-                    aboutState = aboutState,
+                    aboutState = aboutState.copy(dailyGoal = dailyGoal),
                     onFumeiClick = mainViewModel::onFumeiClick,
                     onEditPuff = mainViewModel::onEditPuff,
                     onDeletePuff = mainViewModel::onDeletePuff,
@@ -181,6 +220,8 @@ class FumeiAppE2ETest {
                     onStatsTitleClick = statsViewModel::onPeriodTitleClick,
                     onStatsMonthSelected = statsViewModel::onMonthSelected,
                     onStatsYearSelected = statsViewModel::onYearSelected,
+                    onDailyGoalIncrement = settingsViewModel::incrementDailyGoal,
+                    onDailyGoalDecrement = settingsViewModel::decrementDailyGoal,
                 )
             }
         }

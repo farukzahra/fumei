@@ -64,6 +64,8 @@ fun FumeiApp(
     onStatsTitleClick: () -> Unit,
     onStatsMonthSelected: (java.time.YearMonth) -> Unit,
     onStatsYearSelected: (Int) -> Unit,
+    onDailyGoalIncrement: () -> Unit,
+    onDailyGoalDecrement: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(AppTab.Home) }
@@ -103,6 +105,8 @@ fun FumeiApp(
             )
             AppTab.About -> AboutScreen(
                 uiState = aboutState,
+                onDailyGoalIncrement = onDailyGoalIncrement,
+                onDailyGoalDecrement = onDailyGoalDecrement,
                 modifier = Modifier.padding(innerPadding),
             )
         }
@@ -133,8 +137,6 @@ fun RegisterActionButton(
                 contentColor = AppColors.Ash950,
             ),
         ) {
-            Text("●", color = AppColors.Ash950)
-            Spacer(modifier = Modifier.width(10.dp))
             Text("Fumei agora", style = FumeiType.button)
         }
         Spacer(modifier = Modifier.height(6.dp))

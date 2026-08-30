@@ -26,6 +26,17 @@ cd C:\repo\fumei
 
 ## APK debug (instalar no celular físico)
 
+**Fluxo padrão:** comando `/enviar-celular` ou:
+
+```powershell
+cd C:\repo\fumei
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\enviar-celular.ps1
+```
+
+Copia para `%USERPROFILE%\Downloads\fumei-debug.apk` — abra no celular e instale.
+
+Build direto (sem cópia):
+
 ```
 C:\repo\fumei\app\build\outputs\apk\debug\app-debug.apk
 ```

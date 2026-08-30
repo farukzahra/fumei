@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Fumei" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Fumei" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@color/ash_950</item>
+        <item name="android:navigationBarColor">@color/ash_950</item>
+        <item name="android:windowBackground">@color/ash_950</item>
+    </style>
+
+    <style name="Theme.Fumei.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_leaf</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/splash_background</item>
+        <item name="postSplashScreenTheme">@style/Theme.Fumei</item>
+    </style>
 </resources>

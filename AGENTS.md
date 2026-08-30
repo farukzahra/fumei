@@ -62,6 +62,14 @@ AVD documentado em `docs/emulator.md` (Pixel6, Android 14).
 
 Ver `.cursor/commands/commit-push.md`. Após push em `main`, validar workflow **Android CI** no GitHub.
 
+## Enviar APK ao celular (`/enviar-celular`)
+
+Ver `.cursor/commands/enviar-celular.md`. Build debug + cópia para `Downloads\fumei-debug.apk`.
+
 ## Idioma
 
 UI e mensagens ao usuário: **pt-BR**. Commits: Conventional Commits em **inglês**.
+
+## Sobre e histórico (obrigatório)
+
+Toda mudança visível ao usuário deve atualizar a aba **Mais** (`AboutScreen.kt`) e `docs/release-history.json` (+ `app/src/main/assets/release-history.json`). Ver `.cursor/rules/update-about-on-change.mdc`.
