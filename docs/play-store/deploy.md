@@ -1,6 +1,6 @@
 # Deploy — Fumei (Play Store produção)
 
-## Artefatos (v1.1.0 / versionCode 2)
+## Artefatos (v1.2.0 / versionCode 3)
 
 | Arquivo | Caminho |
 |---------|---------|
@@ -43,9 +43,10 @@ cd C:\repo\fumei
 
 1. Abrir [Play Console](https://play.google.com/console) → app **Quantos fumei**
 2. **Testar e lançar** → **Produção** → **Criar nova versão**
-3. Upload do AAB: `app-release.aab` (versionCode **2**)
-4. Colar notas da versão
-5. **Revisar versão** → **Iniciar lançamento para produção**
+3. Upload do AAB: `app-release.aab` (versionCode **3**)
+4. **Presença na loja** → atualizar **ícone** com `docs/play-store/assets/icon-512.png`
+5. Colar notas da versão
+6. **Revisar versão** → **Iniciar lançamento para produção**
 
 ### Automação futura
 

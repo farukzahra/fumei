@@ -1,1 +1,1 @@
-Nova interface Material Design, lista de registros com data/hora, editar e excluir entradas, e contador que atualiza automaticamente ao mudar o dia.
+Novo ícone do app e melhorias na interface Material Design com lista, edição e exclusão de registros.

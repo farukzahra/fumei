@@ -1,0 +1,44 @@
+---
+description: Ao concluir task, instalar e abrir o app no emulador local Pixel6
+alwaysApply: true
+---
+
+# Emulador ao concluir task
+
+Sempre que **terminar uma task** (feature, bugfix, refactor com mudança de código/config), antes de avisar o usuário:
+
+1. Garantir emulador **Pixel6** no ar (Android 14)
+2. `.\gradlew installDebug`
+3. Abrir `fumei.faruk.dev.br/fumei.faruk.dev.br.MainActivity`
+4. **Conferir** que o app subiu (activity em foreground — ver comando abaixo)
+5. Informar que o app está rodando no emulador local
+
+Não encerrar a task só com build/test verde: **subir + validar no emulador** é obrigatório.
+
+## Comandos (PowerShell)
+
+```powershell
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+$adb = "$env:ANDROID_HOME\platform-tools\adb.exe"
+$emu = "$env:ANDROID_HOME\emulator\emulator.exe"
+
+# Subir emulador se adb não listar device
+$devices = & $adb devices | Select-String "\tdevice$"
+if (-not $devices) {
+    Start-Process $emu -ArgumentList "-avd","Pixel6"
+    & $adb wait-for-device
+    # Aguardar boot completo
+    do { Start-Sleep 3 } until ((& $adb shell getprop sys.boot_completed 2>$null) -match "1")
+}
+
+cd C:\repo\fumei
+.\gradlew installDebug
+& $adb shell am start -n fumei.faruk.dev.br/fumei.faruk.dev.br.MainActivity
+
+# Conferir que subiu (deve listar fumei.faruk.dev.br.MainActivity em mResumedActivity)
+& $adb shell dumpsys activity activities | Select-String "mResumedActivity"
+```
+
+Detalhes e fallbacks: `docs/emulator.md`.
+
+Não pular só porque o usuário testou no celular físico — o emulador é a validação padrão pós-task.

@@ -9,6 +9,7 @@ Antes de implementar feature ou bugfix:
 1. **brainstorming** — se for trabalho criativo/novo comportamento
 2. **test-driven-development** — teste falhando primeiro, depois código
 3. **verification-before-completion** — rodar comandos e citar evidência antes de dizer que passou
+4. **humanizer** — ao escrever textos de UI/marketing; sem travessão (—), tom direto
 
 ## Testes
 
@@ -28,6 +29,26 @@ E2E usa `createComposeRule()`, `PuffRepository` com banco in-memory e `MainViewM
 - `entries_card` — lista de registros
 - `empty_entries_message` — estado vazio
 - `confirm_delete_button` / `confirm_edit_button` — diálogos
+
+## Ao terminar task (obrigatório)
+
+**Sempre** que concluir qualquer task (feature, bugfix, refactor, docs com impacto em build):
+
+1. Subir ambiente local se estiver off (emulador **Pixel6** — ver `docs/emulator.md`)
+2. `.\gradlew installDebug`
+3. Abrir o app: `adb shell am start -n fumei.faruk.dev.br/fumei.faruk.dev.br.MainActivity`
+4. **Conferir** que subiu (processo em foreground ou tela visível no emulador) — não basta instalar
+5. Informar ao usuário que o app está rodando no emulador
+
+Ver também `.cursor/rules/emulator-after-task.mdc`.
+
+## Seed de dados local (só debug)
+
+Código em `app/src/debug/` — **não compila no release**.
+
+Na primeira abertura do APK debug, insere ~5 anos de registros (0–10 por dia, horários aleatórios). Roda uma vez; para repetir: limpar dados do app.
+
+Não roda durante testes instrumentados.
 
 ## Build e emulador
 

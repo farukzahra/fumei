@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import fumei.faruk.dev.br.data.PuffEntity
 import fumei.faruk.dev.br.data.PuffRepository
+import fumei.faruk.dev.br.data.TodayPuffData
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -14,6 +15,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.math.max
 
 class MainViewModel(
     private val repository: PuffRepository,
@@ -21,9 +23,11 @@ class MainViewModel(
     private val zone = ZoneId.systemDefault()
     private val locale = Locale.forLanguageTag("pt-BR")
     private val entryFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", locale)
+    private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", locale)
+    private val dateHeaderFormatter = DateTimeFormatter.ofPattern("EEEE · d MMM", locale)
     private val dayFormatter = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", locale)
 
-    val uiState: StateFlow<TodayUiState> = repository.observeTodayPuffs(zone)
+    val uiState: StateFlow<TodayUiState> = repository.observeTodayWithYesterdayCount(zone)
         .map(::mapToUiState)
         .stateIn(
             scope = viewModelScope,
@@ -49,24 +53,39 @@ class MainViewModel(
         }
     }
 
-    private fun mapToUiState(puffs: List<PuffEntity>): TodayUiState {
+    private fun mapToUiState(data: TodayPuffData): TodayUiState {
+        val puffs = data.puffs
         val today = Instant.now().atZone(zone).toLocalDate()
         val todayLabel = today.format(dayFormatter).replaceFirstChar { char ->
             if (char.isLowerCase()) char.titlecase(locale) else char.toString()
         }
+        val dateHeader = today.format(dateHeaderFormatter)
+            .uppercase(locale)
+        val count = puffs.size
+        val goal = max(8, count)
+        val delta = count - data.yesterdayCount
+        val vsYesterdayLabel = when {
+            delta > 0 -> "↗ +$delta vs ontem"
+            delta < 0 -> "↘ $delta vs ontem"
+            else -> "= igual a ontem"
+        }
         val entries = puffs.map { puff ->
-            val label = Instant.ofEpochMilli(puff.timestamp)
-                .atZone(zone)
-                .format(entryFormatter)
+            val zoned = Instant.ofEpochMilli(puff.timestamp).atZone(zone)
             PuffListItem(
                 id = puff.id,
-                label = label,
+                label = zoned.format(entryFormatter),
+                timeLabel = zoned.format(timeFormatter),
+                contextLabel = "Hoje",
                 timestampMillis = puff.timestamp,
             )
         }
         return TodayUiState(
-            count = puffs.size,
+            count = count,
             todayLabel = todayLabel,
+            dateHeader = dateHeader,
+            vsYesterdayLabel = vsYesterdayLabel,
+            progressLabel = "$count de $goal",
+            progressFraction = (count.toFloat() / goal).coerceIn(0f, 1f),
             entries = entries,
         )
     }

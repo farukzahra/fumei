@@ -19,5 +19,12 @@ docs/play-store/releases/*.aab
 
 # Secrets / local config
 local.properties
+.env
+.env.*
 **/secrets/
+*.jks
+service-account.json
+credentials.json
+*.pem
+*.p12
 KEYSTORE_INFO.md

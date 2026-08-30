@@ -1,6 +1,7 @@
 package fumei.faruk.dev.br.data
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -24,6 +25,14 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "fumei.db",
                 ).build().also { instance = it }
+            }
+        }
+
+        @VisibleForTesting
+        fun resetInstanceForTests() {
+            synchronized(this) {
+                instance?.close()
+                instance = null
             }
         }
     }

@@ -10,6 +10,9 @@ interface PuffDao {
     @Insert
     suspend fun insert(puff: PuffEntity): Long
 
+    @Insert
+    suspend fun insertAll(puffs: List<PuffEntity>): List<Long>
+
     @Query("DELETE FROM puffs WHERE id = :id")
     suspend fun deleteById(id: Long)
 
@@ -33,4 +36,15 @@ interface PuffDao {
         """,
     )
     fun observePuffsBetween(start: Long, end: Long): Flow<List<PuffEntity>>
+
+    @Query(
+        """
+        SELECT COUNT(*) FROM puffs
+        WHERE timestamp >= :start AND timestamp < :end
+        """,
+    )
+    suspend fun countBetween(start: Long, end: Long): Int
+
+    @Query("SELECT * FROM puffs ORDER BY timestamp ASC")
+    fun observeAllPuffs(): Flow<List<PuffEntity>>
 }
