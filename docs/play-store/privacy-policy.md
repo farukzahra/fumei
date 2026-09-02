@@ -1,6 +1,6 @@
 # Política de Privacidade — Fumei
 
-**Última atualização:** 28 de agosto de 2026
+**Última atualização:** 2 de setembro de 2026
 
 ## Resumo
 
@@ -23,7 +23,7 @@ Para apagar todos os registros, desinstale o app ou limpe os dados do app nas co
 
 ## Contato
 
-Para dúvidas sobre privacidade: [seu e-mail de contato]
+Para dúvidas sobre privacidade: farukz@gmail.com
 
 ## Alterações
 
