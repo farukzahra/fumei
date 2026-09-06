@@ -1,0 +1,11 @@
+﻿{
+    "github":  {
+                   "owner":  "farukzahra",
+                   "repo":  "fumei"
+               },
+    "productionUrl":  "https://play.google.com/store/apps/details?id=fumei.faruk.dev.br",
+    "verify":  {
+                   "type":  "android-ci",
+                   "workflow":  "android-ci.yml"
+               }
+}

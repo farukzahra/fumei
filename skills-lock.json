@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "caveman-commit": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/caveman-commit/SKILL.md",
+      "computedHash": "f028652defd5fdeddcce2994083cb1a7b201ee827bba8e2495546ee159fca3de"
+    },
+    "humanizer": {
+      "source": "blader/humanizer",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "d1a90f19fa4c39cb8105998bf38a6e6a41788e3b4329be086952efa6a3aa362c"
+    },
+    "semantic-version": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/semantic-version/SKILL.md",
+      "computedHash": "0d736dc574837851509a5c8438bd5441f251632b0101af45c437e2d0cc6a97f5"
+    }
+  }
+}
