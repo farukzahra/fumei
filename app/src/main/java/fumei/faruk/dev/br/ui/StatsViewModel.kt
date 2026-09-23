@@ -1,8 +1,10 @@
 package fumei.faruk.dev.br.ui
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import fumei.faruk.dev.br.data.AppDatabase
 import fumei.faruk.dev.br.data.PuffEntity
 import fumei.faruk.dev.br.data.PuffRepository
 import fumei.faruk.dev.br.stats.MonthCell
@@ -11,8 +13,15 @@ import fumei.faruk.dev.br.stats.YearCell
 import fumei.faruk.dev.br.stats.aggregateCountsByDay
 import fumei.faruk.dev.br.stats.aggregateCountsByMonth
 import fumei.faruk.dev.br.stats.aggregateCountsByYear
+import fumei.faruk.dev.br.stats.aggregateGramsByDay
+import fumei.faruk.dev.br.stats.aggregateGramsByMonth
+import fumei.faruk.dev.br.stats.aggregateGramsByYear
 import fumei.faruk.dev.br.stats.buildMonthCalendar
+import fumei.faruk.dev.br.stats.monthGramsTotal
 import fumei.faruk.dev.br.stats.monthTotal
+import fumei.faruk.dev.br.stats.periodGramsLabel
+import fumei.faruk.dev.br.stats.totalGrams
+import fumei.faruk.dev.br.stats.yearGramsTotal
 import fumei.faruk.dev.br.stats.yearTotal
 import fumei.faruk.dev.br.stats.yearsRange
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -114,6 +123,9 @@ class StatsViewModel(
         val countsByDay = aggregateCountsByDay(puffs, zone)
         val countsByMonth = aggregateCountsByMonth(puffs, zone)
         val countsByYear = aggregateCountsByYear(puffs, zone)
+        val gramsByDay = aggregateGramsByDay(puffs, zone)
+        val gramsByMonth = aggregateGramsByMonth(puffs, zone)
+        val gramsByYear = aggregateGramsByYear(puffs, zone)
         val weekFields = WeekFields.of(locale)
         val weekDayLabels = (0..6).map { offset ->
             weekFields.firstDayOfWeek.plus(offset.toLong())
@@ -126,6 +138,7 @@ class StatsViewModel(
         return when (scope) {
             StatsScope.MONTH -> {
                 val total = monthTotal(month, countsByDay)
+                val totalGrams = monthGramsTotal(month, gramsByDay)
                 StatsUiState(
                     scope = scope,
                     periodLabel = month.atDay(1).format(monthTitleFormatter)
@@ -134,20 +147,23 @@ class StatsViewModel(
                         },
                     periodTotal = total,
                     periodTotalLabel = if (total == 1) "1 no mês" else "$total no mês",
+                    periodGramsLabel = periodGramsLabel(totalGrams, scope),
                     canGoNext = month.isBefore(YearMonth.from(today)),
                     canGoPrevious = true,
                     zoomHint = "Toque no título para ver o ano",
                     weekDayLabels = weekDayLabels,
-                    calendarDays = buildMonthCalendar(month, countsByDay, locale),
+                    calendarDays = buildMonthCalendar(month, countsByDay, locale, gramsByDay),
                 )
             }
             StatsScope.YEAR -> {
                 val total = yearTotal(year, countsByMonth)
+                val totalGrams = yearGramsTotal(year, gramsByMonth)
                 val months = (1..12).map { monthNumber ->
                     val yearMonth = YearMonth.of(year, monthNumber)
                     MonthCell(
                         yearMonth = yearMonth,
                         count = countsByMonth[yearMonth] ?: 0,
+                        grams = gramsByMonth[yearMonth] ?: 0.0,
                     )
                 }
                 StatsUiState(
@@ -155,6 +171,7 @@ class StatsViewModel(
                     periodLabel = year.toString(),
                     periodTotal = total,
                     periodTotalLabel = if (total == 1) "1 no ano" else "$total no ano",
+                    periodGramsLabel = periodGramsLabel(totalGrams, scope),
                     canGoNext = year < today.year,
                     canGoPrevious = true,
                     zoomHint = "Toque em um mês para ver os dias",
@@ -163,12 +180,14 @@ class StatsViewModel(
             }
             StatsScope.YEARS -> {
                 val total = puffs.size
+                val allGrams = totalGrams(puffs)
                 val years = yearsRange(puffs, zone, today.year)
                     .reversed()
                     .map { yearValue ->
                         YearCell(
                             year = yearValue,
                             count = countsByYear[yearValue] ?: 0,
+                            grams = gramsByYear[yearValue] ?: 0.0,
                         )
                     }
                 StatsUiState(
@@ -176,6 +195,7 @@ class StatsViewModel(
                     periodLabel = "Todos os anos",
                     periodTotal = total,
                     periodTotalLabel = if (total == 1) "1 no total" else "$total no total",
+                    periodGramsLabel = periodGramsLabel(allGrams, scope),
                     canGoNext = false,
                     canGoPrevious = false,
                     zoomHint = "Toque em um ano para ver os meses",
@@ -187,11 +207,12 @@ class StatsViewModel(
 }
 
 class StatsViewModelFactory(
-    private val repository: PuffRepository,
+    private val appContext: Context,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(StatsViewModel::class.java)) {
+            val repository = PuffRepository(AppDatabase.getInstance(appContext).puffDao())
             return StatsViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

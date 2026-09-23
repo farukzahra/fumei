@@ -9,6 +9,15 @@
 
 ## Subir emulador + instalar app
 
+Fluxo recomendado (limpa dados no emulador e carrega **30 dias** de amostra terminando **hoje**, só debug + emulador):
+
+```powershell
+cd C:\repo\fumei
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\subir-localhost.ps1
+```
+
+Manual:
+
 ```powershell
 $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 $env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
@@ -33,7 +42,7 @@ cd C:\repo\fumei
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\enviar-celular.ps1
 ```
 
-Copia para `%USERPROFILE%\Downloads\fumei-debug.apk` — abra no celular e instale.
+Tenta `adb push` para `/sdcard/Download/fumei-debug.apk` no celular USB; também copia para `%USERPROFILE%\Downloads\fumei-debug.apk` no PC.
 
 Build direto (sem cópia):
 

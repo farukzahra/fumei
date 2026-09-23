@@ -10,6 +10,7 @@ data class StatsUiState(
     val periodLabel: String = "",
     val periodTotal: Int = 0,
     val periodTotalLabel: String = "",
+    val periodGramsLabel: String = "",
     val canGoNext: Boolean = false,
     val canGoPrevious: Boolean = true,
     val zoomHint: String = "",

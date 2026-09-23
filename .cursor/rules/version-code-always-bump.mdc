@@ -1,0 +1,28 @@
+# versionCode — OBRIGATÓRIO incrementar a cada release Play
+
+## Regra absoluta
+
+**Toda vez que gerar AAB para a Play Console, o `versionCode` DEVE subir +1.** A Play trava o código no upload (mesmo se apagar o bundle). Reutilizar = erro.
+
+## Como gerar release (único caminho)
+
+```powershell
+powershell -File scripts/play-release.ps1
+```
+
+O script **`play-release.ps1` chama `bump-version-code.ps1` automaticamente** antes do build. Não rodar `bundleRelease` manualmente para enviar à loja.
+
+## Nunca fazer
+
+- Rebuild do mesmo `versionCode` esperando que a Play aceite
+- `.\gradlew bundleRelease` sem passar pelo `play-release.ps1` quando o destino é a Play
+- Esquecer de atualizar `docs/play-store/version-codes.json` (o bump automático já atualiza)
+
+## Dois números
+
+| Campo | Regra |
+|-------|--------|
+| **versionCode** | Inteiro; +1 em **cada** `play-release.ps1`; registro em `version-codes.json` |
+| **versionName** | Semver público (ex. `1.0.0`); só muda quando combinado (fix/feat/major) |
+
+Política completa: `docs/play-store/versioning.md`

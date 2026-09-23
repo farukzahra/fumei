@@ -3,7 +3,6 @@ package fumei.faruk.dev.br.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BarChart
@@ -56,8 +54,10 @@ fun FumeiApp(
     homeState: TodayUiState,
     statsState: StatsUiState,
     aboutState: AboutUiState,
+    dailyGoal: Int,
+    defaultGramsPerSession: Double,
     onFumeiClick: () -> Unit,
-    onEditPuff: (Long, Long) -> Unit,
+    onEditPuff: (Long, Long, Double) -> Unit,
     onDeletePuff: (Long) -> Unit,
     onStatsPrevious: () -> Unit,
     onStatsNext: () -> Unit,
@@ -66,6 +66,8 @@ fun FumeiApp(
     onStatsYearSelected: (Int) -> Unit,
     onDailyGoalIncrement: () -> Unit,
     onDailyGoalDecrement: () -> Unit,
+    onDefaultGramsIncrement: () -> Unit,
+    onDefaultGramsDecrement: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(AppTab.Home) }
@@ -103,10 +105,14 @@ fun FumeiApp(
                 onYearSelected = onStatsYearSelected,
                 modifier = Modifier.padding(innerPadding),
             )
-            AppTab.About -> AboutScreen(
-                uiState = aboutState,
+            AppTab.About -> MoreScreen(
+                aboutState = aboutState,
+                dailyGoal = dailyGoal,
+                defaultGramsPerSession = defaultGramsPerSession,
                 onDailyGoalIncrement = onDailyGoalIncrement,
                 onDailyGoalDecrement = onDailyGoalDecrement,
+                onDefaultGramsIncrement = onDefaultGramsIncrement,
+                onDefaultGramsDecrement = onDefaultGramsDecrement,
                 modifier = Modifier.padding(innerPadding),
             )
         }
@@ -228,15 +234,5 @@ private fun BottomNavItem(
                 MaterialTheme.colorScheme.onSurfaceVariant
             },
         )
-        if (selected) {
-            Box(
-                modifier = Modifier
-                    .size(5.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary),
-            )
-        } else {
-            Spacer(modifier = Modifier.height(5.dp))
-        }
     }
 }

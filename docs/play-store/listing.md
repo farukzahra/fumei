@@ -13,22 +13,26 @@
 
 ## Descrição curta (80 chars)
 
-Registre quantas vezes você fumou hoje com um toque. Simples e offline.
+Contador de cigarros e vape: um toque por registro. Offline e sem conta.
 
 ## Descrição completa
 
-Fumei é um contador simples para acompanhar quantas vezes você usou o vape no dia.
+Fumei ajuda você a registrar quantas vezes fumou no dia, com um toque.
 
-**Como funciona:**
-- Toque em **Fumei** cada vez que fumar
+Como usar:
+- Toque em Fumei agora cada vez que fumar
 - Veja o total do dia e a lista de horários
-- Tudo fica salvo só no seu celular — sem conta, sem internet
+- Acompanhe a meta diária e compare com ontem
+- Confira estatísticas por dia, mês e ano
+- Tudo fica no celular, sem conta e sem internet
 
-Ideal para quem quer ter consciência do próprio consumo diário.
+Ideal para quem quer ter consciência do próprio consumo, seja cigarro ou vape.
+
+Privacidade: nenhum dado sai do aparelho.
 
 ## Palavras-chave
 
-vape, cigarro eletrônico, contador, hábito, saúde, registro diário
+vape, cigarro, contador, hábito, saúde, registro diário, meta diária
 
 ## Classificação de conteúdo
 
@@ -37,3 +41,15 @@ Provável: **Livre para todos** (sem conteúdo sensível, sem compras, sem anún
 ## Política de privacidade
 
 Publicar em: **https://www.faruk.dev.br/fumei/privacy/**
+
+## Assets (pt-BR)
+
+| Tipo | Arquivo |
+|------|---------|
+| Ícone 512 | `assets/icon-512.png` |
+| Feature graphic | `assets/feature-graphic.png` |
+| Screenshot 1 (Hoje) | `assets/screenshot-01-home.png` |
+| Screenshot 2 (Estatísticas) | `assets/screenshot-02-stats.png` |
+| Screenshot 3 (Mais) | `assets/screenshot-03-about.png` |
+
+Textos prontos para colar: `metadata/pt-BR/`

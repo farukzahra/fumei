@@ -1,0 +1,50 @@
+# Play Store: gerar versão para celular
+
+Sempre que o usuário pedir **versão**, **release**, **AAB**, **publicar na Play** ou ao concluir bump de `versionCode`/`versionName` para envio à loja:
+
+## Ordem obrigatória
+
+1. Alinhar `versionName` e notas se mudou algo visível (`release-notes-pt-BR.txt`)
+2. Rodar **`powershell -File scripts/play-release.ps1`** (incrementa `versionCode` +1 automaticamente e gera o AAB)
+3. Entregar ao usuário **nesta ordem**, cada valor em **bloco de código separado** (regra `copy-paste-fields.mdc`):
+
+**Arquivo (upload do AAB):**
+
+```
+<caminho absoluto do app-release.aab>
+```
+
+**Nome da versão:**
+
+```
+<versionName>
+```
+
+**Notas da versão:**
+
+```
+<texto de docs/play-store/release-notes-pt-BR.txt>
+```
+## Fontes
+
+| Campo Play Console | Fonte |
+|---|---|
+| Arquivo (AAB) | `app/build/outputs/bundle/release/app-release.aab` |
+| Nome da versão * | `versionName` em `app/build.gradle.kts` |
+| Notas da versão | `docs/play-store/release-notes-pt-BR.txt` (pt-BR, tom direto, sem travessão) |
+
+Manifesto gerado pelo script: `docs/play-store/last-release.json` (não commitar se só timestamp mudou; commitar quando versão ou notas mudarem).
+
+## Ao bump de versão
+
+- **versionCode:** sempre via `play-release.ps1` (auto +1). Ver regra `version-code-always-bump.mdc`
+- **versionName:** semver público; ver `docs/play-store/versioning.md`
+- Atualizar `release-notes-pt-BR.txt` com o que o usuário verá na loja (pode ser mais curto que o `summary` do histórico in-app)
+- Rodar `scripts/release-check.ps1`
+
+## Não esquecer
+
+- `targetSdk` / `compileSdk` conforme exigência atual da Play (API 36+)
+- Release com `isMinifyEnabled = true` (mapping no AAB) e `ndk.debugSymbolLevel = FULL` + `ndkVersion` instalado (ver `native-symbols.md`)
+- Privacidade: https://www.faruk.dev.br/fumei/privacy/
+- Se Caddy perder rota `/fumei/*`: `.\scripts\deploy-privacy.ps1`

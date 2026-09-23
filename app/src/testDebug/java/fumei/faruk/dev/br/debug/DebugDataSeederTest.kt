@@ -20,14 +20,14 @@ class DebugDataSeederTest {
             end = end,
         )
 
-        val start = end.minusYears(DebugDataSeeder.YEARS)
+        val start = end.minusYears(DebugSampleData.YEARS)
         val countsByDay = puffs.groupingBy { puff ->
             Instant.ofEpochMilli(puff.timestamp).atZone(zone).toLocalDate()
         }.eachCount()
 
         assertTrue(puffs.isNotEmpty())
         assertTrue(countsByDay.keys.all { !it.isBefore(start) && !it.isAfter(end) })
-        assertTrue(countsByDay.values.all { it in 0..DebugDataSeeder.MAX_PER_DAY })
+        assertTrue(countsByDay.values.all { it in 0..DebugSampleData.MAX_PER_DAY })
     }
 
     @Test

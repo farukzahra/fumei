@@ -36,12 +36,13 @@ class PuffDaoTest {
         val id = dao.insert(PuffEntity(timestamp = now))
 
         val updated = now - 3_600_000L
-        dao.updateTimestamp(id, updated)
+        dao.updatePuff(id, updated, 0.5)
 
         val bounds = dayBounds(java.time.LocalDate.now(), java.time.ZoneId.systemDefault())
         val afterUpdate = dao.getPuffsBetween(bounds.startMillis, bounds.endMillis)
         assertEquals(1, afterUpdate.size)
         assertEquals(updated, afterUpdate.first().timestamp)
+        assertEquals(0.5, afterUpdate.first().grams, 0.001)
 
         dao.deleteById(id)
         val afterDelete = dao.getPuffsBetween(bounds.startMillis, bounds.endMillis)

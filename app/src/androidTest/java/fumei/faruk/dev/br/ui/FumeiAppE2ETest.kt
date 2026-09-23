@@ -121,22 +121,28 @@ class FumeiAppE2ETest {
     @Test
     fun statsTab_showsMonthCalendarWithCounts() {
         seedPuffsForCurrentMonth(count = 2)
+        refreshViewModels()
         setFumeiApp()
 
         composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 8_000) {
+            composeTestRule.onAllNodesWithTag("stats_period_title").fetchSemanticsNodes().isNotEmpty()
+        }
         composeTestRule.onNodeWithTag("stats_month_grid").assertIsDisplayed()
-        composeTestRule.onNodeWithText("2 no mês").assertIsDisplayed()
+        composeTestRule.onNodeWithText("2 no mês", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText("g no mês", substring = true).assertIsDisplayed()
     }
 
     @Test
     fun statsTitle_zoomsToYearAndYearsViews() {
         seedPuffsForCurrentMonth(count = 2)
+        refreshViewModels()
         setFumeiApp()
 
         composeTestRule.onNodeWithTag("nav_stats").performClick()
         composeTestRule.onNodeWithTag("stats_period_title").performClick()
         composeTestRule.onNodeWithTag("stats_year_grid").assertIsDisplayed()
-        composeTestRule.onNodeWithText("(${"2"})").assertIsDisplayed()
+        composeTestRule.onNodeWithText("(2)", substring = true).assertIsDisplayed()
 
         composeTestRule.onNodeWithTag("stats_period_title").performClick()
         composeTestRule.onNodeWithTag("stats_years_grid").assertIsDisplayed()
@@ -147,13 +153,42 @@ class FumeiAppE2ETest {
         setFumeiApp(aboutState = sampleAboutState())
 
         composeTestRule.onNodeWithTag("nav_about").performClick()
-        composeTestRule.onNodeWithTag("about_screen").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("more_nav_settings").performClick()
+        composeTestRule.onNodeWithTag("settings_screen").assertIsDisplayed()
         composeTestRule.onNodeWithTag("daily_goal_card").assertIsDisplayed()
         composeTestRule.onNodeWithTag("daily_goal_value").assertIsDisplayed()
+
+        composeTestRule.onNodeWithContentDescription("Voltar").performClick()
+        composeTestRule.onNodeWithTag("more_nav_about").performClick()
+        composeTestRule.onNodeWithTag("about_screen").assertIsDisplayed()
         composeTestRule.onNodeWithTag("about_version_name").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("about_history_1.4.0").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("about_history_toggle").performClick()
-        composeTestRule.onNodeWithTag("about_history_1.3.0").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithTag("about_history_1.0.0").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("about_pix_card").performScrollTo()
+        composeTestRule.onNodeWithTag("about_pix_copy").assertIsDisplayed()
+    }
+
+    @Test
+    fun useiAgora_showsGramsOnTimelineAndSummary() {
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("fumei_button").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("daily_grams_label").fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithText("0,3 g fumadas hoje").assertIsDisplayed()
+        composeTestRule.onNodeWithText("0,3 g").assertIsDisplayed()
+    }
+
+    @Test
+    fun bottomNav_selectedTab_hasNoIndicatorDot() {
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.onNodeWithTag("nav_about").performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 3_000) {
+            composeTestRule.onAllNodesWithTag("nav_selected_indicator").fetchSemanticsNodes().isEmpty()
+        }
     }
 
     @Test
@@ -161,6 +196,7 @@ class FumeiAppE2ETest {
         setFumeiApp(aboutState = sampleAboutState())
 
         composeTestRule.onNodeWithTag("nav_about").performClick()
+        composeTestRule.onNodeWithTag("more_nav_settings").performClick()
         composeTestRule.onNodeWithTag("daily_goal_increase").performClick()
         composeTestRule.onNodeWithTag("daily_goal_increase").performClick()
 
@@ -182,21 +218,21 @@ class FumeiAppE2ETest {
         }
     }
 
+    private fun refreshViewModels() {
+        mainViewModel = MainViewModel(repository, dailyGoalStore)
+        statsViewModel = StatsViewModel(repository)
+        settingsViewModel = SettingsViewModel(dailyGoalStore)
+    }
+
     private fun sampleAboutState(): AboutUiState {
         return AboutUiState(
-            versionName = "1.4.0",
-            versionCode = 5,
-            dailyGoal = 8,
+            versionName = "1.0.0",
+            versionCode = 12,
             entries = listOf(
                 fumei.faruk.dev.br.data.ReleaseHistoryEntry(
-                    version = "1.4.0",
-                    title = "Visual cinza e brasa",
-                    summary = "Meta diária e Mais reorganizado.",
-                ),
-                fumei.faruk.dev.br.data.ReleaseHistoryEntry(
-                    version = "1.3.0",
-                    title = "Estatísticas e Sobre",
-                    summary = "Menu inferior com Hoje, Estatísticas e Mais.",
+                    version = "1.0.0",
+                    title = "Lançamento na Play Store",
+                    summary = "Contador diário com meta, estatísticas e dados offline.",
                 ),
             ),
         )
@@ -207,11 +243,14 @@ class FumeiAppE2ETest {
             val homeState by mainViewModel.uiState.collectAsState()
             val statsState by statsViewModel.uiState.collectAsState()
             val dailyGoal by settingsViewModel.dailyGoal.collectAsState()
+            val defaultGrams by settingsViewModel.defaultGramsPerSession.collectAsState()
             FumeiTheme {
                 FumeiApp(
                     homeState = homeState,
                     statsState = statsState,
-                    aboutState = aboutState.copy(dailyGoal = dailyGoal),
+                    aboutState = aboutState,
+                    dailyGoal = dailyGoal,
+                    defaultGramsPerSession = defaultGrams,
                     onFumeiClick = mainViewModel::onFumeiClick,
                     onEditPuff = mainViewModel::onEditPuff,
                     onDeletePuff = mainViewModel::onDeletePuff,
@@ -222,6 +261,8 @@ class FumeiAppE2ETest {
                     onStatsYearSelected = statsViewModel::onYearSelected,
                     onDailyGoalIncrement = settingsViewModel::incrementDailyGoal,
                     onDailyGoalDecrement = settingsViewModel::decrementDailyGoal,
+                    onDefaultGramsIncrement = settingsViewModel::incrementDefaultGrams,
+                    onDefaultGramsDecrement = settingsViewModel::decrementDefaultGrams,
                 )
             }
         }

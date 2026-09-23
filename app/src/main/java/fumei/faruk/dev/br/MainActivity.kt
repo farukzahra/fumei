@@ -27,24 +27,20 @@ import fumei.faruk.dev.br.ui.theme.FumeiTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    private val repository by lazy {
-        PuffRepository(AppDatabase.getInstance(applicationContext).puffDao())
-    }
-
-    private val dailyGoalStore by lazy {
+    private val userSettings by lazy {
         UserPreferencesRepository(applicationContext)
     }
 
     private val mainViewModel: MainViewModel by viewModels {
-        MainViewModelFactory(repository, dailyGoalStore)
+        MainViewModelFactory(applicationContext, userSettings)
     }
 
     private val statsViewModel: StatsViewModel by viewModels {
-        StatsViewModelFactory(repository)
+        StatsViewModelFactory(applicationContext)
     }
 
     private val settingsViewModel: SettingsViewModel by viewModels {
-        SettingsViewModelFactory(dailyGoalStore)
+        SettingsViewModelFactory(userSettings)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +48,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         lifecycleScope.launch {
+            val repository = PuffRepository(
+                fumei.faruk.dev.br.data.AppDatabase.getInstance(applicationContext).puffDao(),
+            )
             AppStartup.hook.onAppStart(applicationContext, repository)
         }
         setContent {
@@ -59,13 +58,13 @@ class MainActivity : ComponentActivity() {
                 val homeState by mainViewModel.uiState.collectAsState()
                 val statsState by statsViewModel.uiState.collectAsState()
                 val dailyGoal by settingsViewModel.dailyGoal.collectAsState()
-                val aboutState = remember(dailyGoal) {
+                val defaultGrams by settingsViewModel.defaultGramsPerSession.collectAsState()
+                val aboutState = remember {
                     val history = ReleaseHistoryRepository(applicationContext).load()
                     AboutUiState(
                         versionName = BuildConfig.VERSION_NAME,
                         versionCode = BuildConfig.VERSION_CODE,
                         entries = history.entries,
-                        dailyGoal = dailyGoal,
                     )
                 }
 
@@ -73,6 +72,8 @@ class MainActivity : ComponentActivity() {
                     homeState = homeState,
                     statsState = statsState,
                     aboutState = aboutState,
+                    dailyGoal = dailyGoal,
+                    defaultGramsPerSession = defaultGrams,
                     onFumeiClick = mainViewModel::onFumeiClick,
                     onEditPuff = mainViewModel::onEditPuff,
                     onDeletePuff = mainViewModel::onDeletePuff,
@@ -83,6 +84,8 @@ class MainActivity : ComponentActivity() {
                     onStatsYearSelected = statsViewModel::onYearSelected,
                     onDailyGoalIncrement = settingsViewModel::incrementDailyGoal,
                     onDailyGoalDecrement = settingsViewModel::decrementDailyGoal,
+                    onDefaultGramsIncrement = settingsViewModel::incrementDefaultGrams,
+                    onDefaultGramsDecrement = settingsViewModel::decrementDefaultGrams,
                 )
             }
         }

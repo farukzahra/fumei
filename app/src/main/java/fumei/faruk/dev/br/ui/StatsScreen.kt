@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import fumei.faruk.dev.br.stats.StatsScope
+import fumei.faruk.dev.br.ui.ConsumptionFormat
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -64,6 +65,7 @@ fun StatsScreen(
         StatsPeriodHeader(
             label = uiState.periodLabel,
             totalLabel = uiState.periodTotalLabel,
+            gramsLabel = uiState.periodGramsLabel,
             zoomHint = uiState.zoomHint,
             canGoPrevious = uiState.canGoPrevious,
             canGoNext = uiState.canGoNext,
@@ -106,6 +108,7 @@ fun StatsScreen(
                         MonthCountCell(
                             label = label,
                             count = month.count,
+                            grams = month.grams,
                             onClick = { onMonthSelected(month.yearMonth) },
                         )
                     }
@@ -123,6 +126,7 @@ fun StatsScreen(
                         YearCountCell(
                             year = year.year,
                             count = year.count,
+                            grams = year.grams,
                             onClick = { onYearSelected(year.year) },
                         )
                     }
@@ -136,6 +140,7 @@ fun StatsScreen(
 private fun StatsPeriodHeader(
     label: String,
     totalLabel: String,
+    gramsLabel: String,
     zoomHint: String,
     canGoPrevious: Boolean,
     canGoNext: Boolean,
@@ -186,9 +191,19 @@ private fun StatsPeriodHeader(
                         textAlign = TextAlign.Center,
                     )
                     Text(
-                        text = totalLabel,
+                        text = buildAnnotatedString {
+                            append(totalLabel)
+                            if (gramsLabel.isNotBlank()) {
+                                append("\n")
+                                withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                    append(gramsLabel)
+                                }
+                            }
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.testTag("stats_period_summary"),
                     )
                 }
                 IconButton(
@@ -272,6 +287,14 @@ private fun DayCountCell(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                 )
+                if (day.grams > 0.0) {
+                    Text(
+                        text = ConsumptionFormat.formatGramsTotal(day.grams) + " g",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.testTag("stats_day_grams_${day.date}"),
+                    )
+                }
             }
         }
     }
@@ -281,6 +304,7 @@ private fun DayCountCell(
 private fun MonthCountCell(
     label: String,
     count: Int,
+    grams: Double,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -310,7 +334,7 @@ private fun MonthCountCell(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-            PeriodCountBadge(count = count)
+            PeriodCountBadge(count = count, grams = grams)
         }
     }
 }
@@ -319,6 +343,7 @@ private fun MonthCountCell(
 private fun YearCountCell(
     year: Int,
     count: Int,
+    grams: Double,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -348,7 +373,7 @@ private fun YearCountCell(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
-            PeriodCountBadge(count = count)
+            PeriodCountBadge(count = count, grams = grams)
         }
     }
 }
@@ -356,12 +381,18 @@ private fun YearCountCell(
 @Composable
 private fun PeriodCountBadge(
     count: Int,
+    grams: Double = 0.0,
     modifier: Modifier = Modifier,
 ) {
     val countColor = if (count > 0) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    val gramsSuffix = if (grams > 0.0) {
+        " · ${ConsumptionFormat.formatGramsTotal(grams)} g"
+    } else {
+        ""
     }
     Text(
         text = buildAnnotatedString {
@@ -374,7 +405,7 @@ private fun PeriodCountBadge(
             ) {
                 append(count.toString())
             }
-            append(")")
+            append(")$gramsSuffix")
         },
         modifier = modifier.testTag("stats_count_badge_$count"),
         style = MaterialTheme.typography.titleMedium,

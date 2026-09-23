@@ -8,7 +8,7 @@
 
     <style name="Theme.Fumei.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_leaf</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_mark</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/splash_background</item>
         <item name="postSplashScreenTheme">@style/Theme.Fumei</item>
     </style>

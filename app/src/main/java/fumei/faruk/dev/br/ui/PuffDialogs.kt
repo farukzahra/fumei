@@ -3,11 +3,13 @@ package fumei.faruk.dev.br.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -20,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import java.time.Instant
 import java.time.LocalDate
@@ -33,8 +36,9 @@ import java.util.Locale
 @Composable
 fun EditPuffDialog(
     timestampMillis: Long,
+    grams: Double,
     onDismiss: () -> Unit,
-    onConfirm: (Long) -> Unit,
+    onConfirm: (timestampMillis: Long, grams: Double) -> Unit,
 ) {
     val zone = ZoneId.systemDefault()
     val locale = Locale.forLanguageTag("pt-BR")
@@ -48,6 +52,10 @@ fun EditPuffDialog(
     var selectedTime by remember(timestampMillis) {
         mutableStateOf(initial.toLocalTime().withSecond(0).withNano(0))
     }
+    var gramsText by remember(timestampMillis, grams) {
+        mutableStateOf(ConsumptionFormat.formatGrams(grams))
+    }
+    var gramsError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
@@ -68,16 +76,41 @@ fun EditPuffDialog(
                 ) {
                     Text("Hora: ${selectedTime.format(timeFormatter)}")
                 }
+                OutlinedTextField(
+                    value = gramsText,
+                    onValueChange = {
+                        gramsText = it
+                        gramsError = false
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("edit_grams_field"),
+                    label = { Text("Gramas nesta sessão") },
+                    suffix = { Text("g") },
+                    isError = gramsError,
+                    supportingText = {
+                        if (gramsError) {
+                            Text("Informe um valor válido")
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                )
             }
         },
         confirmButton = {
             TextButton(
                 onClick = {
+                    val parsedGrams = ConsumptionFormat.parseGramsInput(gramsText)
+                    if (parsedGrams == null) {
+                        gramsError = true
+                        return@TextButton
+                    }
                     val newMillis = LocalDateTime.of(selectedDate, selectedTime)
                         .atZone(zone)
                         .toInstant()
                         .toEpochMilli()
-                    onConfirm(newMillis)
+                    onConfirm(newMillis, parsedGrams)
                 },
                 modifier = Modifier.testTag("confirm_edit_button"),
             ) {

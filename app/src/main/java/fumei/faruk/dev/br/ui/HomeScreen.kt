@@ -50,7 +50,7 @@ import fumei.faruk.dev.br.ui.theme.FumeiType
 @Composable
 fun HomeScreen(
     uiState: TodayUiState,
-    onEditPuff: (Long, Long) -> Unit,
+    onEditPuff: (Long, Long, Double) -> Unit,
     onDeletePuff: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -60,9 +60,10 @@ fun HomeScreen(
     editingEntry?.let { entry ->
         EditPuffDialog(
             timestampMillis = entry.timestampMillis,
+            grams = entry.grams,
             onDismiss = { editingEntry = null },
-            onConfirm = { newTimestamp ->
-                onEditPuff(entry.id, newTimestamp)
+            onConfirm = { newTimestamp, newGrams ->
+                onEditPuff(entry.id, newTimestamp, newGrams)
                 editingEntry = null
             },
         )
@@ -96,6 +97,7 @@ fun HomeScreen(
                 count = uiState.count,
                 progressFraction = uiState.progressFraction,
                 progressLabel = uiState.progressLabel,
+                gramsTodayLabel = uiState.gramsTodayLabel,
                 diaLabel = uiState.dateHeader.ifBlank { uiState.todayLabel },
             )
         }
@@ -147,6 +149,7 @@ private fun DiaHeader(
     count: Int,
     progressFraction: Float,
     progressLabel: String,
+    gramsTodayLabel: String,
     diaLabel: String,
     modifier: Modifier = Modifier,
 ) {
@@ -202,6 +205,15 @@ private fun DiaHeader(
                 color = AppColors.Ember500,
                 modifier = Modifier.testTag("daily_progress_label"),
             )
+            Spacer(modifier = Modifier.height(6.dp))
+        }
+        if (gramsTodayLabel.isNotBlank()) {
+            Text(
+                text = gramsTodayLabel,
+                style = FumeiType.body.copy(fontSize = 14.sp),
+                color = AppColors.Smoke400,
+                modifier = Modifier.testTag("daily_grams_label"),
+            )
             Spacer(modifier = Modifier.height(8.dp))
         }
         if (diaLabel.isNotBlank()) {
@@ -253,14 +265,25 @@ private fun RegistroRow(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = entry.timeLabel,
+            Row(
                 modifier = Modifier
                     .weight(1f)
                     .clickable(onClick = onEditar),
-                style = FumeiType.timestamp,
-                color = AppColors.Paper100,
-            )
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = entry.timeLabel,
+                    style = FumeiType.timestamp,
+                    color = AppColors.Paper100,
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = entry.gramsLabel,
+                    style = FumeiType.body.copy(fontSize = 12.sp),
+                    color = AppColors.Smoke400,
+                    modifier = Modifier.testTag("timeline_entry_grams"),
+                )
+            }
             IconButton(
                 onClick = onEditar,
                 modifier = Modifier.size(40.dp),
@@ -295,13 +318,14 @@ private fun HomeScreenPreview() {
                 dateHeader = "DOMINGO · 30 AGO",
                 progressLabel = "3 de 8",
                 progressFraction = 0.375f,
+                gramsTodayLabel = "0,9 g fumadas hoje",
                 entries = listOf(
-                    PuffListItem(1, "29/08/2026 14:49", "14:49", "Hoje", 1_756_489_740_000L),
-                    PuffListItem(2, "29/08/2026 12:10", "12:10", "Hoje", 1_756_480_200_000L),
-                    PuffListItem(3, "29/08/2026 11:02", "11:02", "Hoje", 1_756_476_120_000L),
+                    PuffListItem(1, "29/08/2026 14:49", "14:49", "0,3 g", "Hoje", 1_756_489_740_000L, 0.3),
+                    PuffListItem(2, "29/08/2026 12:10", "12:10", "0,3 g", "Hoje", 1_756_480_200_000L, 0.3),
+                    PuffListItem(3, "29/08/2026 11:02", "11:02", "0,3 g", "Hoje", 1_756_476_120_000L, 0.3),
                 ),
             ),
-            onEditPuff = { _, _ -> },
+            onEditPuff = { _, _, _ -> },
             onDeletePuff = {},
         )
     }

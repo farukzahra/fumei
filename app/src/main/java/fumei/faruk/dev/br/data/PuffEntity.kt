@@ -7,4 +7,5 @@ import androidx.room.PrimaryKey
 data class PuffEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val timestamp: Long,
+    val grams: Double = ConsumptionSettings.DEFAULT_GRAMS_PER_SESSION,
 )

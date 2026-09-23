@@ -42,13 +42,15 @@ E2E usa `createComposeRule()`, `PuffRepository` com banco in-memory e `MainViewM
 
 Ver também `.cursor/rules/emulator-after-task.mdc`.
 
-## Seed de dados local (só debug)
+## Banco de dados
 
-Código em `app/src/debug/` — **não compila no release**.
+- O APK **não** inclui registros de exemplo. Primeira instalação começa vazia.
+- **Atualizar** por cima mantém `fumei.db` no celular (mesmo pacote e assinatura). Não usar `fallbackToDestructiveMigration`.
+- Dados de teste só em testes instrumentados (`inMemory` / `@Before` limpa DB).
 
-Na primeira abertura do APK debug, insere ~5 anos de registros (0–10 por dia, horários aleatórios). Roda uma vez; para repetir: limpar dados do app.
+## Seed de dados (removido do APK)
 
-Não roda durante testes instrumentados.
+O build **release** e o debug no **celular físico** não preenchem o banco. No **emulador**, o debug aplica `DebugDevSeeder`: ~30 dias de registros terminando no dia atual (via `FumeiDebugApplication`). Script `scripts/subir-localhost.ps1` faz `pm clear` + `installDebug` para recarregar a amostra. Utilitário `DebugSampleData` também serve testes em `testDebug`.
 
 ## Build e emulador
 
@@ -64,7 +66,25 @@ Ver `.cursor/commands/commit-push.md`. Após push em `main`, validar workflow **
 
 ## Enviar APK ao celular (`/enviar-celular`)
 
-Ver `.cursor/commands/enviar-celular.md`. Build debug + cópia para `Downloads\fumei-debug.apk`.
+Ver `.cursor/commands/enviar-celular.md`. Build debug + push para `Download/fumei-debug.apk` no celular (USB/adb); fallback em `Downloads\fumei-debug.apk` no PC.
+
+## Play Store: gerar versão (AAB)
+
+Sempre que gerar versão para a loja, entregar **nesta ordem**, cada campo em bloco de código separado (regra `.cursor/rules/copy-paste-fields.mdc`):
+
+1. **Arquivo** — path do `app-release.aab`
+2. **Nome da versão** — `versionName` do Gradle
+3. **Notas da versão** — conteúdo de `docs/play-store/release-notes-pt-BR.txt`
+
+Comando (incrementa versionCode automaticamente):
+
+```powershell
+powershell -File scripts/play-release.ps1
+```
+
+Manifesto: `docs/play-store/last-release.json`. Regra completa: `.cursor/rules/play-store-release.mdc`.
+
+Registro de version codes (não repetir na Play): `docs/play-store/version-codes.json`, `version-codes.md` e política **`docs/play-store/versioning.md`** (versionCode a partir de 10; versionName semver a partir de 1.0.0).
 
 ## Idioma
 
@@ -73,3 +93,23 @@ UI e mensagens ao usuário: **pt-BR**. Commits: Conventional Commits em **inglê
 ## Sobre e histórico (obrigatório)
 
 Toda mudança visível ao usuário deve atualizar a aba **Mais** (`AboutScreen.kt`) e `docs/release-history.json` (+ `app/src/main/assets/release-history.json`). Ver `.cursor/rules/update-about-on-change.mdc`.
+
+## Superpowers workflow
+
+| Phase | Skill | Output |
+|-------|-------|--------|
+| Design | `brainstorming` | Approved design â†’ `docs/superpowers/specs/YYYY-MM-DD-*-design.md` |
+| Plan | `writing-plans` | `docs/superpowers/plans/YYYY-MM-DD-*.md` |
+| Build | stack skills + `tdd` | Code + tests |
+| Verify | `verification-before-completion` | Evidence before "done" |
+| Debug | `systematic-debugging` | Root cause before fix |
+| Ship | `/commit-push` | `semantic-version` + `caveman-commit` + push + CI |
+
+**Gates:** no feature code before approved spec; no "done" without verification; version bump only on `/commit-push`.
+
+Invoke `/init` to (re)bootstrap skills and folders.
+## Agent automation (mandatory)
+
+Before manual steps (login, browser click, "run this yourself"): read **`automate-before-manual`** (`.agents/skills/`). If the user refuses manual work, also **`dont-be-lazy`**. Secrets vault: `../secrets/` (see `AGENTS.md` or `secrets.local.md`). Cursor rule: `.cursor/rules/automate-before-manual.mdc`.
+
+Invoke `/init` to (re)install skills and this rule.

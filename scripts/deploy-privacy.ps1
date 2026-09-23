@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $source = Join-Path $repoRoot "docs\play-store\privacy-policy.html"
 $sshKey = Join-Path (Split-Path -Parent $repoRoot) "secrets\vps\ssh\github-actions-vps-shared"
-$hostAddr = "root@66.23.231.218"
+$hostAddr = "root@92.112.177.249"
 $remoteDir = "/opt/fumei-site/privacy"
 $remoteFile = "$remoteDir/index.html"
 

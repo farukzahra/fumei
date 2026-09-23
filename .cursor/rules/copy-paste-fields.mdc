@@ -1,0 +1,44 @@
+# Campos para copiar e colar
+
+Sempre que entregar texto, caminho, comando ou valor que o usuário deva **colar** em outro lugar (Play Console, formulário, terminal, chat, e-mail, etc.), colocar **cada valor em um bloco de código separado**, pronto para copiar com um clique.
+
+## Formato obrigatório
+
+- Um bloco por campo (não misturar vários valores no mesmo bloco).
+- Título curto antes do bloco indicando onde colar (ex.: **Nome da versão**, **Notas da versão**).
+- Dentro do bloco: **somente** o valor a colar, sem label, sem aspas extras, sem markdown interno.
+- Caminhos de arquivo: bloco próprio com path absoluto.
+- Comandos de terminal: bloco `powershell` ou `bash` completo e executável.
+
+## Exemplo (Play Console)
+
+**Arquivo (upload do AAB):**
+
+```
+C:\repo\fumei\app\build\outputs\bundle\release\app-release.aab
+```
+
+**Nome da versão:**
+
+```
+1.4.3
+```
+
+**Notas da versão:**
+
+```
+Atualização para compatibilidade com Android 16, exigida pela Google Play. Nada mudou no uso do app.
+```
+
+## O que evitar
+
+- Valor solto em prosa sem bloco de código.
+- Tabela ou lista onde o usuário precise selecionar manualmente parte do texto.
+- Um único bloco com "Nome: X / Notas: Y" misturado.
+
+## Quando aplicar
+
+- Release Play Store (ver também `play-store-release.mdc`)
+- URLs, tokens, mensagens de commit sugeridas para o usuário colar
+- Notas da versão, títulos de loja, descrições para formulários
+- Qualquer instrução explícita do tipo "cole isso em..."

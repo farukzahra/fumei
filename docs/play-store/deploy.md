@@ -1,18 +1,30 @@
 # Deploy — Fumei (Play Store produção)
 
-## Artefatos (v1.2.0 / versionCode 3)
+## Gerar versão (obrigatório antes de subir na Play)
+
+```powershell
+cd C:\repo\fumei
+powershell -File scripts/play-release.ps1
+```
+
+O script valida versão, roda testes, gera o AAB e imprime os três campos da Play Console:
+
+| Campo Play Console | Fonte |
+|---|---|
+| Arquivo (AAB) | `app/build/outputs/bundle/release/app-release.aab` |
+| Nome da versão * | `versionName` em `app/build.gradle.kts` |
+| Notas da versão | `docs/play-store/release-notes-pt-BR.txt` |
+
+Manifesto salvo em `docs/play-store/last-release.json`.
+
+Versão atual: **1.0.0** (versionCode **11**). Próximo code: **12**.
+
+## Artefatos
 
 | Arquivo | Caminho |
 |---------|---------|
 | AAB (produção) | `app/build/outputs/bundle/release/app-release.aab` |
 | APK (instalação direta) | `app/build/outputs/apk/release/app-release.apk` |
-
-Gerar de novo:
-
-```powershell
-cd C:\repo\fumei
-.\gradlew test connectedDebugAndroidTest bundleRelease assembleRelease
-```
 
 ## Instalar no celular (USB)
 
@@ -43,7 +55,7 @@ cd C:\repo\fumei
 
 1. Abrir [Play Console](https://play.google.com/console) → app **Quantos fumei**
 2. **Testar e lançar** → **Produção** → **Criar nova versão**
-3. Upload do AAB: `app-release.aab` (versionCode **3**)
+3. Upload do AAB: `app-release.aab` (versionCode **8**)
 4. **Presença na loja** → atualizar **ícone** com `docs/play-store/assets/icon-512.png`
 5. Colar notas da versão
 6. **Revisar versão** → **Iniciar lançamento para produção**

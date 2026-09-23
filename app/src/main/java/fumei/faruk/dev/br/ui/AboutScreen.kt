@@ -18,14 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,7 +57,6 @@ data class AboutUiState(
     val versionCode: Int = 0,
     val entries: List<ReleaseHistoryEntry> = emptyList(),
     val pixKey: String = AboutSupport.PIX_KEY,
-    val dailyGoal: Int = DailyProgress.DEFAULT_GOAL,
 )
 
 private object AboutSupport {
@@ -69,8 +66,7 @@ private object AboutSupport {
 @Composable
 fun AboutScreen(
     uiState: AboutUiState,
-    onDailyGoalIncrement: () -> Unit,
-    onDailyGoalDecrement: () -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var historyExpanded by remember { mutableStateOf(false) }
@@ -83,17 +79,26 @@ fun AboutScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            DailyGoalCard(
-                dailyGoal = uiState.dailyGoal,
-                onIncrement = onDailyGoalIncrement,
-                onDecrement = onDailyGoalDecrement,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Voltar",
+                        tint = AppColors.Paper100,
+                    )
+                }
+                Text(
+                    text = "Sobre",
+                    style = FumeiType.displayLabel,
+                    color = AppColors.Paper100,
+                )
+            }
+        }
+        item {
+            AboutHeroCard(uiState = uiState)
         }
         item {
             SupportSection(pixKey = uiState.pixKey)
-        }
-        item {
-            AboutSummaryCard(uiState = uiState)
         }
         item {
             ReleaseHistorySection(
@@ -106,72 +111,16 @@ fun AboutScreen(
 }
 
 @Composable
-private fun DailyGoalCard(
-    dailyGoal: Int,
-    onIncrement: () -> Unit,
-    onDecrement: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    AboutSectionCard(
-        modifier = modifier.testTag("daily_goal_card"),
-        title = "Meta diária",
-    ) {
-        Text(
-            text = "Quantos vou fumar por dia",
-            style = FumeiType.body,
-            color = AppColors.Paper100,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            FilledTonalIconButton(
-                onClick = onDecrement,
-                modifier = Modifier
-                    .size(44.dp)
-                    .testTag("daily_goal_decrease"),
-            ) {
-                Icon(Icons.Filled.Remove, contentDescription = "Diminuir meta")
-            }
-            Spacer(modifier = Modifier.width(20.dp))
-            Text(
-                text = dailyGoal.toString(),
-                style = FumeiType.displayCount.copy(fontSize = 40.sp),
-                color = AppColors.Ember500,
-                modifier = Modifier.testTag("daily_goal_value"),
-            )
-            Spacer(modifier = Modifier.width(20.dp))
-            FilledTonalIconButton(
-                onClick = onIncrement,
-                modifier = Modifier
-                    .size(44.dp)
-                    .testTag("daily_goal_increase"),
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "Aumentar meta")
-            }
-        }
-    }
-}
-
-@Composable
-private fun AboutSummaryCard(
+private fun AboutHeroCard(
     uiState: AboutUiState,
     modifier: Modifier = Modifier,
 ) {
     AboutSectionCard(
-        modifier = modifier,
-        title = "Sobre o app",
+        modifier = modifier.testTag("about_hero_card"),
+        title = "Fumei",
     ) {
         Text(
-            text = uiState.appName,
-            style = FumeiType.displayLabel,
-            color = AppColors.Paper100,
-            fontWeight = FontWeight.SemiBold,
-        )
-        Text(
-            text = "Registre cada cigarro, veja a linha do tempo do dia e acompanhe estatísticas. Tudo offline no celular.",
+            text = "Contador de sessões de cannabis no vaporizador. Um toque, gramas do dia e estatísticas. Tudo offline.",
             style = FumeiType.body.copy(fontSize = 14.sp),
             color = AppColors.Smoke400,
         )
@@ -305,7 +254,10 @@ private fun SupportSection(
                     Text(
                         text = pixKey,
                         modifier = Modifier.testTag("about_pix_key"),
-                        style = FumeiType.timestamp.copy(fontSize = 13.sp),
+                        style = FumeiType.timestamp.copy(
+                            fontSize = 10.sp,
+                            lineHeight = 13.sp,
+                        ),
                         fontFamily = FontFamily.Monospace,
                         color = AppColors.Paper100,
                     )
@@ -366,7 +318,7 @@ private fun AboutHistoryItem(
 }
 
 @Composable
-private fun AboutSectionCard(
+internal fun AboutSectionCard(
     title: String,
     modifier: Modifier = Modifier,
     onHeaderClick: (() -> Unit)? = null,

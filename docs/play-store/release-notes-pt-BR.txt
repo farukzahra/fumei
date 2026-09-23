@@ -1,1 +1,1 @@
-Novo ícone do app e melhorias na interface Material Design com lista, edição e exclusão de registros.
+Mais com Configurações e Sobre. Registre sessões em gramas (padrão 0,3 g), veja o total do dia na Home e gramas nas Estatísticas. Meta diária continua offline no celular.

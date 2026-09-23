@@ -49,8 +49,9 @@ class PuffRepository(private val dao: PuffDao) {
         }
     }
 
-    suspend fun addPuff(at: Instant = Instant.now()): Long {
-        return dao.insert(PuffEntity(timestamp = at.toEpochMilli()))
+    suspend fun addPuff(at: Instant = Instant.now(), grams: Double = ConsumptionSettings.DEFAULT_GRAMS_PER_SESSION): Long {
+        val normalizedGrams = ConsumptionSettings.normalizedGrams(grams)
+        return dao.insert(PuffEntity(timestamp = at.toEpochMilli(), grams = normalizedGrams))
     }
 
     suspend fun insertAll(puffs: List<PuffEntity>) {
@@ -62,9 +63,15 @@ class PuffRepository(private val dao: PuffDao) {
         dao.deleteById(id)
     }
 
-    suspend fun updatePuffTimestamp(id: Long, at: Instant) {
-        dao.updateTimestamp(id, at.toEpochMilli())
+    suspend fun clearAllPuffs() {
+        dao.deleteAll()
     }
+
+    suspend fun updatePuff(id: Long, at: Instant, grams: Double) {
+        dao.updatePuff(id, at.toEpochMilli(), ConsumptionSettings.normalizedGrams(grams))
+    }
+
+    suspend fun countAllPuffs(): Int = dao.countAll()
 
     fun observeAllPuffs(): Flow<List<PuffEntity>> = dao.observeAllPuffs()
 }
