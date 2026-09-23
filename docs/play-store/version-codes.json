@@ -1,11 +1,11 @@
 {
     "package":  "fumei.faruk.dev.br",
-    "playStoreMaxVersionCode":  13,
-    "nextVersionCode":  15,
+    "playStoreMaxVersionCode":  14,
+    "nextVersionCode":  16,
     "publicVersionName":  "1.0.1",
-    "publicLaunchVersionCode":  14,
-    "updatedAt":  "2026-09-10T15:36:33.097Z",
-    "note":  "versionCode (Play) e versionName (semver pÃºblico) sÃ£o faixas separadas. LanÃ§amento 1.0.0 = code 11 (10 consumido no upload). Ver versioning.md.",
+    "publicLaunchVersionCode":  15,
+    "updatedAt":  "2026-09-23T23:05:12.949Z",
+    "note":  "versionCode (Play) e versionName (semver pÃƒÂºblico) sÃƒÂ£o faixas separadas. LanÃƒÂ§amento 1.0.0 = code 11 (10 consumido no upload). Ver versioning.md.",
     "releases":  [
                      {
                          "versionCode":  1,
@@ -66,14 +66,14 @@
                          "versionName":  "1.0.0",
                          "date":  "2026-09-06",
                          "playStore":  "consumed",
-                         "note":  "Upload consumiu o cÃ³digo (1.4.5 ou 1.0.0 no bundle)."
+                         "note":  "Upload consumiu o cÃƒÂ³digo (1.4.5 ou 1.0.0 no bundle)."
                      },
                      {
                          "versionCode":  11,
                          "versionName":  "1.0.0",
                          "date":  "2026-09-06",
                          "playStore":  "consumed",
-                         "note":  "Upload consumiu o cÃ³digo."
+                         "note":  "Upload consumiu o cÃƒÂ³digo."
                      },
                      {
                          "versionCode":  12,
@@ -93,8 +93,15 @@
                          "versionCode":  14,
                          "versionName":  "1.0.1",
                          "date":  "2026-09-23",
-                         "playStore":  "current",
+                         "playStore":  "consumed",
                          "note":  "Dev build antes do upload Play 1.0.1"
+                     },
+                     {
+                         "versionCode":  15,
+                         "versionName":  "1.0.1",
+                         "date":  "2026-09-23",
+                         "playStore":  "current",
+                         "note":  "Gerado por bump-version-code.ps1 / play-release.ps1"
                      }
                  ]
 }

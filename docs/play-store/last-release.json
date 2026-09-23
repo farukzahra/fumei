@@ -1,13 +1,13 @@
 {
-    "aabSizeBytes":  3133986,
-    "versionName":  "1.0.0",
-    "releaseNotes":  "Nova identidade visual na loja, screenshots atualizados e textos revisados. Mesmo app: registre com um toque, veja estatísticas e meta diária. Tudo offline no celular.",
-    "generatedAt":  "2026-09-10T15:37:14.279Z",
-    "versionCode":  13,
+    "aabSizeBytes":  3171622,
+    "versionName":  "1.0.1",
+    "releaseNotes":  "Mais com Configurações e Sobre. Registre sessões em gramas (padrão 0,3 g), veja o total do dia na Home e gramas nas Estatísticas. Meta diária continua offline no celular.",
+    "generatedAt":  "2026-09-23T23:06:01.722Z",
+    "versionCode":  15,
     "aabPath":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
     "playConsole":  {
                         "arquivo":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
-                        "nomeDaVersao":  "1.0.0",
-                        "notasDaVersao":  "Nova identidade visual na loja, screenshots atualizados e textos revisados. Mesmo app: registre com um toque, veja estatísticas e meta diária. Tudo offline no celular."
+                        "nomeDaVersao":  "1.0.1",
+                        "notasDaVersao":  "Mais com Configurações e Sobre. Registre sessões em gramas (padrão 0,3 g), veja o total do dia na Home e gramas nas Estatísticas. Meta diária continua offline no celular."
                     }
 }
