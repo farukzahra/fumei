@@ -17,7 +17,7 @@ O script valida versão, roda testes, gera o AAB e imprime os três campos da Pl
 
 Manifesto salvo em `docs/play-store/last-release.json`.
 
-Versão atual: **1.0.0** (versionCode **11**). Próximo code: **12**.
+Release preparado: **1.0.2** (versionCode **16**). Próximo code: **17**.
 
 ## Artefatos
 
@@ -55,7 +55,7 @@ cd C:\repo\fumei
 
 1. Abrir [Play Console](https://play.google.com/console) → app **Quantos fumei**
 2. **Testar e lançar** → **Produção** → **Criar nova versão**
-3. Upload do AAB: `app-release.aab` (versionCode **8**)
+3. Upload do AAB: `app-release.aab` (versionCode **16**)
 4. **Presença na loja** → atualizar **ícone** com `docs/play-store/assets/icon-512.png`
 5. Colar notas da versão
 6. **Revisar versão** → **Iniciar lançamento para produção**

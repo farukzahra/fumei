@@ -8,7 +8,7 @@ class ReleaseHistoryRepository(
 ) {
     fun load(): ReleaseHistory {
         val jsonText = context.assets.open("release-history.json")
-            .bufferedReader()
+            .bufferedReader(Charsets.UTF_8)
             .use { it.readText() }
         val root = JSONObject(jsonText)
         val entriesJson = root.getJSONArray("entries")

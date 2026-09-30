@@ -1,1 +1,1 @@
-Mais com Configurações e Sobre. Registre sessões em gramas (padrão 0,3 g), veja o total do dia na Home e gramas nas Estatísticas. Meta diária continua offline no celular.
+Corrigida a leitura do histórico de versões para preservar os acentos em português.

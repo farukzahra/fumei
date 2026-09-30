@@ -5,9 +5,9 @@ $historyPath = Join-Path $root "docs\release-history.json"
 $codesPath = Join-Path $root "docs\play-store\version-codes.json"
 $gradlePath = Join-Path $root "app\build.gradle.kts"
 
-$history = Get-Content $historyPath -Raw | ConvertFrom-Json
-$codes = Get-Content $codesPath -Raw | ConvertFrom-Json
-$gradle = Get-Content $gradlePath -Raw
+$history = Get-Content $historyPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$codes = Get-Content $codesPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$gradle = Get-Content $gradlePath -Raw -Encoding UTF8
 
 if ($gradle -notmatch 'versionCode\s*=\s*(\d+)') {
     Write-Error "versionCode not found in app/build.gradle.kts"

@@ -90,6 +90,13 @@ Registro de version codes (não repetir na Play): `docs/play-store/version-codes
 
 UI e mensagens ao usuário: **pt-BR**. Commits: Conventional Commits em **inglês**.
 
+### Charset
+
+- Arquivos Kotlin, JSON e textos com conteúdo em português devem ser salvos em UTF-8.
+- Ao ler assets ou outros streams de texto, declarar `Charsets.UTF_8` explicitamente. Em PowerShell, usar `Get-Content -Encoding UTF8` para JSON e outros arquivos UTF-8.
+- Antes de concluir mudanças em textos exibidos no app, conferir acentos no arquivo fonte e no app instalado; não aceitar sequências corrompidas como `Ã`, `Â` ou `�`.
+- O CI e `scripts/play-release.ps1` validam o histórico em `scripts/check_release_history_encoding.py`.
+
 ## Sobre e histórico (obrigatório)
 
 Toda mudança visível ao usuário deve atualizar a aba **Mais** (`AboutScreen.kt`) e `docs/release-history.json` (+ `app/src/main/assets/release-history.json`). Ver `.cursor/rules/update-about-on-change.mdc`.

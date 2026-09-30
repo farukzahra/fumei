@@ -9,7 +9,7 @@ Fonte canônica de códigos Play: `version-codes.json`.
 | Campo | Regra |
 |-------|--------|
 | **versionCode** | Inteiro; sobe +1 a cada upload; nunca reutilizar (Play trava no envio). |
-| **versionName** | Semver público; **1.0.0** no code **10**; próximo: 1.0.1 / 1.1.0 / 2.0.0 conforme o tipo de mudança. |
+| **versionName** | Semver público; **1.0.2** no code **16**; próximo conforme o tipo de mudança. |
 
 ## Histórico Play (versionCode)
 
@@ -18,10 +18,13 @@ Fonte canônica de códigos Play: `version-codes.json`.
 | 1–7 | dev (1.0.0–1.4.2) | 2026-08 | consumidos (builds internos) |
 | 8 | 1.4.3 | 2026-09-06 | consumido (upload teste) |
 | 9 | 1.4.4 | 2026-09-06 | consumido (upload teste) |
-| 10 | 1.0.0 | 2026-09-06 | consumido (upload) |
-| **12** | **1.0.0** | **2026-09-06** | **atual — usar este** |
+| 10–12 | 1.0.0 | 2026-09-06 | consumidos (uploads) |
+| 13 | 1.0.0 | 2026-09-10 | consumido (lançamento) |
+| 14 | 1.0.1 | 2026-09-23 | consumido (build) |
+| 15 | 1.0.1 | 2026-09-23 | consumido (release anterior) |
+| **16** | **1.0.2** | **2026-09-30** | **atual** |
 
-**Próximo versionCode:** 13 (automático no `play-release.ps1`)
+**Próximo versionCode:** 17 (automático no `play-release.ps1`)
 
 ## Alinhamento obrigatório
 

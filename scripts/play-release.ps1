@@ -13,8 +13,24 @@ if (Test-Path $studioJbr) {
 
 Write-Host "=== AUTO BUMP versionCode (+1) ==="
 & powershell -File (Join-Path $repoRoot "scripts\bump-version-code.ps1")
+if ($LASTEXITCODE -ne 0) {
+    throw "versionCode bump failed"
+}
 
 & powershell -File (Join-Path $repoRoot "scripts\release-check.ps1")
+if ($LASTEXITCODE -ne 0) {
+    throw "Release version validation failed"
+}
+
+& .\gradlew.bat :app:copyReleaseHistory
+if ($LASTEXITCODE -ne 0) {
+    throw "Could not synchronize release-history.json to app assets"
+}
+
+& python (Join-Path $repoRoot "scripts\check_release_history_encoding.py")
+if ($LASTEXITCODE -ne 0) {
+    throw "Release history UTF-8 validation failed"
+}
 
 $notesPath = Join-Path $repoRoot "docs\play-store\release-notes-pt-BR.txt"
 $historyPath = Join-Path $repoRoot "docs\release-history.json"
@@ -22,8 +38,8 @@ $gradlePath = Join-Path $repoRoot "app\build.gradle.kts"
 $aabPath = Join-Path $repoRoot "app\build\outputs\bundle\release\app-release.aab"
 $manifestPath = Join-Path $repoRoot "docs\play-store\last-release.json"
 
-$history = Get-Content $historyPath -Raw | ConvertFrom-Json
-$gradle = Get-Content $gradlePath -Raw
+$history = Get-Content $historyPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$gradle = Get-Content $gradlePath -Raw -Encoding UTF8
 
 if ($gradle -notmatch 'versionCode\s*=\s*(\d+)') { throw "versionCode not found" }
 $versionCode = [int]$Matches[1]

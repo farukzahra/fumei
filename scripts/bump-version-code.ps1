@@ -36,7 +36,7 @@ $gradle = $gradle -replace 'versionCode\s*=\s*\d+', "versionCode = $newCode"
 $gradle = $gradle -replace 'versionName\s*=\s*"[^"]+"', "versionName = `"$gradleName`""
 [System.IO.File]::WriteAllText($gradlePath, $gradle, [System.Text.UTF8Encoding]::new($false))
 
-$history = Get-Content $historyPath -Raw | ConvertFrom-Json
+$history = Get-Content $historyPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $history.currentVersion = $gradleName
 $history.versionCode = $newCode
 $history.updatedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
@@ -60,7 +60,7 @@ if ($top.version -eq $gradleName) {
 $historyJson = $history | ConvertTo-Json -Depth 6
 [System.IO.File]::WriteAllText($historyPath, $historyJson, [System.Text.UTF8Encoding]::new($false))
 
-$codesObj = Get-Content $codesPath -Raw | ConvertFrom-Json
+$codesObj = Get-Content $codesPath -Raw -Encoding UTF8 | ConvertFrom-Json
 foreach ($r in $codesObj.releases) {
     if ($r.playStore -eq "current") {
         $r.playStore = "consumed"

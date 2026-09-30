@@ -7,8 +7,8 @@ Dois números independentes. Não misturar.
 - Só serve para a **Google Play** ordenar uploads.
 - **Nunca reutilizar.** A Play consome o código no upload, mesmo se você apagar o bundle.
 - Histórico interno de uploads começou em **1** (dev); códigos **8–9** consumidos em testes.
-- **Lançamento público 1.0.0 = versionCode 10.**
-- Próximo upload: **11**, depois **12**, sempre +1.
+- **Lançamento público 1.0.0 = versionCode 13.**
+- O release atual é **1.0.2 (versionCode 16)**. Próximo upload: **17**.
 
 Registro: `version-codes.json`
 
@@ -38,6 +38,6 @@ Registro: `version-codes.json`
 
 | versionCode | versionName | Status |
 |-------------|-------------|--------|
-| **11** | **1.0.0** | atual — lançamento Play |
+| **16** | **1.0.2** | atual — correção de charset no histórico |
 
-Próximo par previsto: **12** + semver a definir (ex. 1.0.1 ou 1.1.0).
+Próximo versionCode: **17**. O próximo versionName depende do tipo de mudança.

@@ -2,10 +2,11 @@
 
 ## Contexto
 
-A aba Mais exibe títulos e resumos do histórico de releases com mojibake, embora
-os arquivos de histórico verificados contenham texto UTF-8 válido. O repositório
-carrega o JSON do asset sem declarar explicitamente o charset e o E2E atual usa
-dados de histórico simulados.
+A aba Mais exibe títulos e resumos do histórico de releases com mojibake. O
+repositório carregava o asset sem declarar explicitamente o charset e o script
+de bump lia JSON UTF-8 com `Get-Content` sem `-Encoding UTF8`. No Windows
+PowerShell 5.1, isso decodifica os bytes pela página ANSI e regrava texto
+corrompido como UTF-8. O teste E2E existente usa dados simulados.
 
 ## Opções consideradas
 
@@ -19,11 +20,15 @@ dados de histórico simulados.
 
 - Ler `release-history.json` com `Charsets.UTF_8` explicitamente em
   `ReleaseHistoryRepository`.
-- Adicionar teste de integração Android usando o asset real e verificar strings
-  acentuadas do release atual, incluindo “Sessões em gramas” e “Configurações”.
+- Ler JSON UTF-8 com `-Encoding UTF8` nos scripts de bump e validação de release.
+- Validar em Python que `docs/release-history.json` e o asset sejam UTF-8 válido,
+  iguais e sem marcadores de mojibake. Executar o validador no script de release
+  e no Android CI.
+- Adicionar testes de integração Android para o asset real e testes Python para
+  strings acentuadas, mojibake, JSON inválido e divergência entre os arquivos.
 - Registrar em `AGENTS.md` que arquivos de texto/JSON do app devem permanecer em
-  UTF-8, leitores de conteúdo externo devem declarar o charset, e conteúdo
-  destinado à interface deve ser inspecionado contra mojibake.
+  UTF-8, leitores de conteúdo externo devem declarar o charset, e executar o
+  validador automatizado.
 - Manter `docs/release-history.json` e o asset sincronizados. O versionamento e a
   entrada de histórico de release serão tratados no fluxo `/commit-push`.
 
@@ -38,5 +43,4 @@ dados de histórico simulados.
 
 ## Fora de escopo
 
-- Corrigir textos internos com mojibake que não aparecem no fluxo/tela afetado.
 - Fazer mudanças de arquitetura no repositório de histórico.
