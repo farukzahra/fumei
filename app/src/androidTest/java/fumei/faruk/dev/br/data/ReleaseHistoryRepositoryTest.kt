@@ -13,11 +13,12 @@ class ReleaseHistoryRepositoryTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val history = ReleaseHistoryRepository(context).load()
 
-        assertEquals("Sessões em gramas", history.entries.first().title)
+        assertEquals("Acentos no histórico de versões", history.entries.first().title)
         assertEquals(
-            "Mais com Configurações e Sobre. Gramas por sessão e total em g na Home e Estatísticas. Botão Fumei agora com padrão 0,3 g.",
+            "O histórico de novidades é lido em UTF-8 para preservar os acentos em português.",
             history.entries.first().summary,
         )
+        assertEquals("Sessões em gramas", history.entries[1].title)
         assertEquals("Lançamento na Play Store", history.entries.last().title)
     }
 }
