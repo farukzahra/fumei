@@ -10,7 +10,7 @@
                         "title":  "Acentos no histórico de versões",
                         "summary":  "O histórico de novidades é lido em UTF-8 para preservar os acentos em português.",
                         "type":  "fix",
-                        "commit":  null
+                        "commit": "eb5789b"
                     },
                     {
                         "version":  "1.0.1",
