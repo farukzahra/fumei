@@ -10,7 +10,7 @@
                         "title":  "Veja os intervalos e a média mensal",
                         "summary":  "A timeline mostra o tempo entre sessões centralizado nos horários. As estatísticas também calculam a média mensal entre sessões.",
                         "type":  "feat",
-                        "commit":  null
+                        "commit":  "82c3cde"
                     },
                     {
                         "version":  "1.0.2",
