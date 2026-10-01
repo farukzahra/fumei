@@ -11,6 +11,7 @@ data class StatsUiState(
     val periodTotal: Int = 0,
     val periodTotalLabel: String = "",
     val periodGramsLabel: String = "",
+    val monthlyAverageIntervalLabel: String? = null,
     val canGoNext: Boolean = false,
     val canGoPrevious: Boolean = true,
     val zoomHint: String = "",

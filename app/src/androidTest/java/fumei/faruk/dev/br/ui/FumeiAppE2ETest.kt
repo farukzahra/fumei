@@ -28,6 +28,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.ZoneId
 
 @RunWith(AndroidJUnit4::class)
@@ -131,6 +133,35 @@ class FumeiAppE2ETest {
         composeTestRule.onNodeWithTag("stats_month_grid").assertIsDisplayed()
         composeTestRule.onNodeWithText("2 no mês", substring = true).assertIsDisplayed()
         composeTestRule.onNodeWithText("g no mês", substring = true).assertIsDisplayed()
+    }
+
+    @Test
+    fun statsTab_displaysAverageSessionIntervalForSelectedMonth() {
+        val zone = ZoneId.systemDefault()
+        runBlocking {
+            repository.addPuff(LocalDateTime.of(2026, 8, 1, 10, 0).atZone(zone).toInstant())
+            repository.addPuff(LocalDateTime.of(2026, 8, 2, 13, 0).atZone(zone).toInstant())
+        }
+        statsViewModel.onMonthSelected(YearMonth.of(2026, 8))
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.onNodeWithText(
+            "Você levou em média 27h entre as sessões neste mês.",
+            substring = true,
+        ).assertIsDisplayed()
+    }
+
+    @Test
+    fun statsTab_displaysAverageSessionIntervalPromptWhenMonthHasNoSessions() {
+        statsViewModel.onMonthSelected(YearMonth.of(2026, 8))
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.onNodeWithText(
+            "Registre mais sessões para calcular a média",
+            substring = true,
+        ).assertIsDisplayed()
     }
 
     @Test

@@ -16,6 +16,7 @@ import fumei.faruk.dev.br.stats.aggregateCountsByYear
 import fumei.faruk.dev.br.stats.aggregateGramsByDay
 import fumei.faruk.dev.br.stats.aggregateGramsByMonth
 import fumei.faruk.dev.br.stats.aggregateGramsByYear
+import fumei.faruk.dev.br.stats.averageSessionIntervalMillis
 import fumei.faruk.dev.br.stats.buildMonthCalendar
 import fumei.faruk.dev.br.stats.monthGramsTotal
 import fumei.faruk.dev.br.stats.monthTotal
@@ -139,6 +140,7 @@ class StatsViewModel(
             StatsScope.MONTH -> {
                 val total = monthTotal(month, countsByDay)
                 val totalGrams = monthGramsTotal(month, gramsByDay)
+                val averageInterval = averageSessionIntervalMillis(puffs, month, zone)
                 StatsUiState(
                     scope = scope,
                     periodLabel = month.atDay(1).format(monthTitleFormatter)
@@ -148,6 +150,9 @@ class StatsViewModel(
                     periodTotal = total,
                     periodTotalLabel = if (total == 1) "1 no mês" else "$total no mês",
                     periodGramsLabel = periodGramsLabel(totalGrams, scope),
+                    monthlyAverageIntervalLabel = averageInterval?.let {
+                        "Você levou em média ${SessionIntervalFormat.formatElapsedMillis(it)} entre as sessões neste mês."
+                    } ?: "Registre mais sessões para calcular a média",
                     canGoNext = month.isBefore(YearMonth.from(today)),
                     canGoPrevious = true,
                     zoomHint = "Toque no título para ver o ano",

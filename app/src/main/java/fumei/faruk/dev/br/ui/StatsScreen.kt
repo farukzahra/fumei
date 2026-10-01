@@ -66,6 +66,7 @@ fun StatsScreen(
             label = uiState.periodLabel,
             totalLabel = uiState.periodTotalLabel,
             gramsLabel = uiState.periodGramsLabel,
+            monthlyAverageIntervalLabel = uiState.monthlyAverageIntervalLabel,
             zoomHint = uiState.zoomHint,
             canGoPrevious = uiState.canGoPrevious,
             canGoNext = uiState.canGoNext,
@@ -141,6 +142,7 @@ private fun StatsPeriodHeader(
     label: String,
     totalLabel: String,
     gramsLabel: String,
+    monthlyAverageIntervalLabel: String?,
     zoomHint: String,
     canGoPrevious: Boolean,
     canGoNext: Boolean,
@@ -198,6 +200,10 @@ private fun StatsPeriodHeader(
                                 withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
                                     append(gramsLabel)
                                 }
+                            }
+                            if (monthlyAverageIntervalLabel != null) {
+                                append("\n")
+                                append(monthlyAverageIntervalLabel)
                             }
                         },
                         style = MaterialTheme.typography.bodyMedium,
