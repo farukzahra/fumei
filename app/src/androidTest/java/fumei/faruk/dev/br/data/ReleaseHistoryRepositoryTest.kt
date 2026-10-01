@@ -13,12 +13,17 @@ class ReleaseHistoryRepositoryTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val history = ReleaseHistoryRepository(context).load()
 
-        assertEquals("Veja os intervalos e a média mensal", history.entries.first().title)
         assertEquals(
-            "A timeline mostra o tempo entre sessões centralizado nos horários. As estatísticas também calculam a média mensal entre sessões.",
-            history.entries.first().summary,
+            "Correção no histórico de novidades",
+            history.entries.first().title,
         )
-        assertEquals("Sessões em gramas", history.entries[2].title)
+        assertEquals("Veja os intervalos e a média mensal", history.entries[1].title)
+        assertEquals("Acentos no histórico de versões", history.entries[2].title)
+        assertEquals(
+            "O histórico de novidades é lido em UTF-8 para preservar os acentos em português.",
+            history.entries[2].summary,
+        )
+        assertEquals("Sessões em gramas", history.entries[3].title)
         assertEquals("Lançamento na Play Store", history.entries.last().title)
     }
 }

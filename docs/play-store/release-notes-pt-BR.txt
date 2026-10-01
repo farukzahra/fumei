@@ -1,1 +1,1 @@
-A timeline mostra o tempo entre sessões, centralizado nos horários. As estatísticas mensais também exibem a média entre sessões.
+Corrigida a versão atribuída às novidades no histórico do app.

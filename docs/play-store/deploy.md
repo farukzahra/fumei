@@ -17,7 +17,7 @@ O script valida versão, roda testes, gera o AAB e imprime os três campos da Pl
 
 Manifesto salvo em `docs/play-store/last-release.json`.
 
-Release preparado: **1.1.0** (versionCode **17**). Próximo code: **18**.
+Release preparado: **1.1.1** (versionCode **18**). Próximo code: **19**.
 
 ## Artefatos
 
@@ -51,13 +51,13 @@ cd C:\repo\fumei
 
 ## Lançamento atual em produção
 
-Versão **1.1.0**, versionCode **17**, publicada na faixa **Produção**.
+Versão **1.1.1**, versionCode **18**, publicada na faixa **Produção**.
 
 Notas publicadas: `docs/play-store/release-notes-pt-BR.txt`.
 
 Para preparar a próxima versão, use `powershell -File scripts/play-release.ps1`.
 O comando incrementa o `versionCode`, valida os arquivos de release, roda os
-testes e gera o AAB. O próximo código é **18**.
+testes e gera o AAB. O próximo código é **19**.
 
 O envio à Play Console usa a Android Publisher API com a service account local
 em `..\secrets\google-play\service-account.json`. Nunca adicione essa chave ao

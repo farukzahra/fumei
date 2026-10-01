@@ -8,7 +8,7 @@ Dois números independentes. Não misturar.
 - **Nunca reutilizar.** A Play consome o código no upload, mesmo se você apagar o bundle.
 - Histórico interno de uploads começou em **1** (dev); códigos **8–9** consumidos em testes.
 - **Lançamento público 1.0.0 = versionCode 13.**
-- O release atual é **1.1.0 (versionCode 17)**. Próximo upload: **18**.
+- O release atual é **1.1.1 (versionCode 18)**. Próximo upload: **19**.
 
 Registro: `version-codes.json`
 
@@ -38,6 +38,6 @@ Registro: `version-codes.json`
 
 | versionCode | versionName | Status |
 |-------------|-------------|--------|
-| **17** | **1.1.0** | atual — intervalo entre sessões na timeline |
+| **18** | **1.1.1** | atual — correção da versão atribuída ao histórico |
 
-Próximo versionCode: **18**. O próximo versionName depende do tipo de mudança.
+Próximo versionCode: **19**. O próximo versionName depende do tipo de mudança.
