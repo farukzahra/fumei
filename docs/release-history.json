@@ -10,7 +10,7 @@
                         "title":  "Correção no histórico de novidades",
                         "summary":  "Corrigida a versão atribuída às novidades no histórico do app.",
                         "type":  "fix",
-                        "commit":  null
+                        "commit":  "425d50d"
                     },
                     {
                         "version":  "1.1.0",
