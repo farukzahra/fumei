@@ -88,6 +88,25 @@ fun aggregateCountsByYear(
     }.eachCount()
 }
 
+fun averageSessionIntervalMillis(
+    puffs: List<PuffEntity>,
+    month: YearMonth,
+    zone: ZoneId,
+): Long? {
+    val timestamps = puffs.asSequence()
+        .filter { puff ->
+            YearMonth.from(Instant.ofEpochMilli(puff.timestamp).atZone(zone)) == month
+        }
+        .map { it.timestamp }
+        .sorted()
+        .toList()
+
+    if (timestamps.size < 2) return null
+
+    val intervals = timestamps.zipWithNext { earlier, later -> later - earlier }
+    return intervals.sum() / intervals.size
+}
+
 fun buildMonthCalendar(
     yearMonth: YearMonth,
     countsByDay: Map<LocalDate, Int>,
