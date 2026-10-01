@@ -78,17 +78,21 @@ class MainViewModel(
             delta < 0 -> "↘ $delta vs ontem"
             else -> "= igual a ontem"
         }
-        val entries = puffs.map { puff ->
-            val zoned = Instant.ofEpochMilli(puff.timestamp).atZone(zone)
-            PuffListItem(
-                id = puff.id,
-                label = zoned.format(entryFormatter),
-                timeLabel = zoned.format(timeFormatter),
-                gramsLabel = ConsumptionFormat.formatGramsWithUnit(puff.grams),
-                contextLabel = "Hoje",
-                timestampMillis = puff.timestamp,
-                grams = puff.grams,
-            )
+        val entries = puffs.mapIndexed { index, puff ->
+            val zoned = Instant.ofEpochMilli(puff.timestamp).atZone(zone)
+            val intervalSincePreviousLabel = puffs.getOrNull(index + 1)?.let { olderPuff ->
+                SessionIntervalFormat.formatElapsedMillis(puff.timestamp - olderPuff.timestamp)
+            }
+            PuffListItem(
+                id = puff.id,
+                label = zoned.format(entryFormatter),
+                timeLabel = zoned.format(timeFormatter),
+                gramsLabel = ConsumptionFormat.formatGramsWithUnit(puff.grams),
+                contextLabel = "Hoje",
+                timestampMillis = puff.timestamp,
+                grams = puff.grams,
+                intervalSincePreviousLabel = intervalSincePreviousLabel,
+            )
         }
         return TodayUiState(
             count = count,

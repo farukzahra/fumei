@@ -17,7 +17,7 @@ O script valida versão, roda testes, gera o AAB e imprime os três campos da Pl
 
 Manifesto salvo em `docs/play-store/last-release.json`.
 
-Release preparado: **1.0.2** (versionCode **16**). Próximo code: **17**.
+Release preparado: **1.1.0** (versionCode **17**). Próximo code: **18**.
 
 ## Artefatos
 
@@ -49,17 +49,16 @@ cd C:\repo\fumei
 & $adb install -r app\build\outputs\apk\release\app-release.apk
 ```
 
-## Publicar em produção (Play Console)
+## Lançamento atual em produção
 
-**Notas da versão (pt-BR):** `docs/play-store/release-notes-pt-BR.txt`
+Versão **1.1.0**, versionCode **17**, publicada na faixa **Produção**.
 
-1. Abrir [Play Console](https://play.google.com/console) → app **Quantos fumei**
-2. **Testar e lançar** → **Produção** → **Criar nova versão**
-3. Upload do AAB: `app-release.aab` (versionCode **16**)
-4. **Presença na loja** → atualizar **ícone** com `docs/play-store/assets/icon-512.png`
-5. Colar notas da versão
-6. **Revisar versão** → **Iniciar lançamento para produção**
+Notas publicadas: `docs/play-store/release-notes-pt-BR.txt`.
 
-### Automação futura
+Para preparar a próxima versão, use `powershell -File scripts/play-release.ps1`.
+O comando incrementa o `versionCode`, valida os arquivos de release, roda os
+testes e gera o AAB. O próximo código é **18**.
 
-Salvar `service-account.json` em `C:\repo\secrets\google-play\` e configurar MCP conforme `docs/play-store/mcp-setup.md` para upload via API.
+O envio à Play Console usa a Android Publisher API com a service account local
+em `..\secrets\google-play\service-account.json`. Nunca adicione essa chave ao
+repositório.

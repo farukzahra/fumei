@@ -1,13 +1,13 @@
 {
-    "aabSizeBytes":  3171722,
-    "versionName":  "1.0.2",
-    "releaseNotes":  "Corrigida a leitura do histórico de versões para preservar os acentos em português.",
-    "generatedAt":  "2026-09-30T11:05:28.556Z",
-    "versionCode":  16,
-    "aabPath":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
-    "playConsole":  {
-                        "arquivo":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
-                        "nomeDaVersao":  "1.0.2",
-                        "notasDaVersao":  "Corrigida a leitura do histórico de versões para preservar os acentos em português."
-                    }
+  "aabSizeBytes": 3177053,
+  "versionName": "1.1.0",
+  "releaseNotes": "A timeline mostra o tempo entre sessões, centralizado nos horários. As estatísticas mensais também exibem a média entre sessões.",
+  "generatedAt": "2026-10-01T22:28:04.526Z",
+  "versionCode": 17,
+  "aabPath": "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
+  "playConsole": {
+    "arquivo": "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
+    "nomeDaVersao": "1.1.0",
+    "notasDaVersao": "A timeline mostra o tempo entre sessões, centralizado nos horários. As estatísticas mensais também exibem a média entre sessões."
+  }
 }

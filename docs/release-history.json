@@ -1,16 +1,25 @@
 {
-    "currentVersion":  "1.0.2",
-    "versionCode":  16,
-    "updatedAt":  "2026-09-30T11:04:22.308Z",
+    "currentVersion":  "1.1.0",
+    "versionCode":  17,
+    "updatedAt":  "2026-10-01T21:50:36.415Z",
     "entries":  [
+                    {
+                        "version":  "1.1.0",
+                        "versionCode":  17,
+                        "date":  "2026-10-01",
+                        "title":  "Veja os intervalos e a média mensal",
+                        "summary":  "A timeline mostra o tempo entre sessões centralizado nos horários. As estatísticas também calculam a média mensal entre sessões.",
+                        "type":  "feat",
+                        "commit":  null
+                    },
                     {
                         "version":  "1.0.2",
                         "versionCode":  16,
                         "date":  "2026-09-29",
-                        "title":  "Acentos no histórico de versões",
-                        "summary":  "O histórico de novidades é lido em UTF-8 para preservar os acentos em português.",
+                        "title":  "Acentos e intervalos entre sessões",
+                        "summary":  "O histórico de novidades é lido em UTF-8, e a timeline mostra o tempo entre sessões.",
                         "type":  "fix",
-                        "commit": "eb5789b"
+                        "commit":  "eb5789b"
                     },
                     {
                         "version":  "1.0.1",

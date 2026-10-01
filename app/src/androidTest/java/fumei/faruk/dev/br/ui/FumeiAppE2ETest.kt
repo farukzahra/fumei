@@ -23,6 +23,7 @@ import fumei.faruk.dev.br.data.UserPreferencesRepository
 import fumei.faruk.dev.br.ui.theme.FumeiTheme
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -73,6 +74,37 @@ class FumeiAppE2ETest {
             composeTestRule.onAllNodesWithTag("entries_timeline").fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithTag("entries_timeline").assertIsDisplayed()
+    }
+
+    @Test
+    fun timeline_displaysElapsedTimeBetweenAdjacentSessions() {
+        val zone = ZoneId.systemDefault()
+        val startOfToday = LocalDate.now(zone).atStartOfDay(zone).toInstant()
+        runBlocking {
+            repository.addPuff(startOfToday.plusSeconds(13 * 3_600L + 27 * 60L))
+            repository.addPuff(startOfToday.plusSeconds(14 * 3_600L + 26 * 60L))
+            repository.addPuff(startOfToday.plusSeconds(16 * 3_600L + 8 * 60L))
+        }
+        setFumeiApp()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("timeline_interval_label").fetchSemanticsNodes().size == 2
+        }
+        val times = composeTestRule.onAllNodesWithTag(
+            "timeline_entry_time",
+            useUnmergedTree = true,
+        ).fetchSemanticsNodes()
+        val intervals = composeTestRule.onAllNodesWithTag("timeline_interval_label").fetchSemanticsNodes()
+        assertEquals(3, times.size)
+        assertEquals(2, intervals.size)
+        intervals.forEachIndexed { index, interval ->
+            val upperTimeCenter = times[index].boundsInRoot.center.y
+            val lowerTimeCenter = times[index + 1].boundsInRoot.center.y
+            val expectedCenter = (upperTimeCenter + lowerTimeCenter) / 2f
+            assertEquals(expectedCenter, interval.boundsInRoot.center.y, 1f)
+        }
+        composeTestRule.onNodeWithText("1h42m").assertIsDisplayed()
+        composeTestRule.onNodeWithText("59m").assertIsDisplayed()
     }
 
     @Test
@@ -192,6 +224,9 @@ class FumeiAppE2ETest {
         composeTestRule.onNodeWithContentDescription("Voltar").performClick()
         composeTestRule.onNodeWithTag("more_nav_about").performClick()
         composeTestRule.onNodeWithTag("about_screen").assertIsDisplayed()
+        composeTestRule.onNodeWithText("tempo entre sessões", substring = true)
+            .performScrollTo()
+            .assertIsDisplayed()
         composeTestRule.onNodeWithTag("about_version_name").assertIsDisplayed()
         composeTestRule.onNodeWithTag("about_history_1.0.0").assertIsDisplayed()
         composeTestRule.onNodeWithTag("about_pix_card").performScrollTo()

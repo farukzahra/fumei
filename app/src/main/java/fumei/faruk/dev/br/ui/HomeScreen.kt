@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -241,23 +242,52 @@ private fun RegistroRow(
             .testTag("timeline_entry"),
         verticalAlignment = Alignment.Top,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(AppColors.Ember500),
-            )
+        Box(
+            modifier = Modifier
+                .width(50.dp)
+                .height(if (isLast) 10.dp else 60.dp),
+        ) {
             if (!isLast) {
                 Box(
                     modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 10.dp)
                         .width(2.dp)
-                        .height(40.dp)
+                        .height(50.dp)
                         .background(AppColors.Smoke400.copy(alpha = 0.35f)),
                 )
             }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .size(10.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(AppColors.Ember500)
+                    .testTag("timeline_entry_dot"),
+            )
+            entry.intervalSincePreviousLabel?.let { intervalLabel ->
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 10.dp)
+                        .width(50.dp)
+                        .height(50.dp),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    Text(
+                        text = intervalLabel,
+                        style = FumeiType.body.copy(fontSize = 12.sp),
+                        color = AppColors.Smoke400,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .offset(x = 14.dp)
+                            .offset(y = 15.dp)
+                            .testTag("timeline_interval_label"),
+                    )
+                }
+            }
         }
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Row(
             modifier = Modifier
                 .weight(1f)
@@ -275,6 +305,7 @@ private fun RegistroRow(
                     text = entry.timeLabel,
                     style = FumeiType.timestamp,
                     color = AppColors.Paper100,
+                    modifier = Modifier.testTag("timeline_entry_time"),
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(

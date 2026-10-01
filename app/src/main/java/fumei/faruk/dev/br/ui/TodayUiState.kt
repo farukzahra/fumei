@@ -8,6 +8,7 @@ data class PuffListItem(
     val contextLabel: String,
     val timestampMillis: Long,
     val grams: Double,
+    val intervalSincePreviousLabel: String? = null,
 )
 
 data class TodayUiState(
