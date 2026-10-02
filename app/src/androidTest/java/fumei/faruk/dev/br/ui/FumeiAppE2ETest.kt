@@ -30,6 +30,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneId
 
@@ -105,6 +106,33 @@ class FumeiAppE2ETest {
         }
         composeTestRule.onNodeWithText("1h42m").assertIsDisplayed()
         composeTestRule.onNodeWithText("59m").assertIsDisplayed()
+    }
+
+    @Test
+    fun timeline_showsNoIntervalForTheFirstEntryOfTheDay() {
+        val zone = ZoneId.systemDefault()
+        val today = LocalDate.now(zone)
+        runBlocking {
+            repository.addPuff(
+                LocalDateTime.of(today.minusDays(1), LocalTime.of(23, 0)).atZone(zone).toInstant(),
+            )
+            repository.addPuff(
+                LocalDateTime.of(today, LocalTime.of(10, 0)).atZone(zone).toInstant(),
+            )
+            repository.addPuff(
+                LocalDateTime.of(today, LocalTime.of(13, 0)).atZone(zone).toInstant(),
+            )
+        }
+        setFumeiApp()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("timeline_interval_label").fetchSemanticsNodes().size == 1
+        }
+        assertEquals(
+            2,
+            composeTestRule.onAllNodesWithTag("timeline_entry").fetchSemanticsNodes().size,
+        )
+        composeTestRule.onNodeWithText("3h").assertIsDisplayed()
     }
 
     @Test
