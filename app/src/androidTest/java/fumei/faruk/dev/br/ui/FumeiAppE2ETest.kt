@@ -171,6 +171,23 @@ class FumeiAppE2ETest {
     fun statsTab_displaysAverageSessionIntervalForSelectedMonth() {
         val zone = ZoneId.systemDefault()
         runBlocking {
+            repository.addPuff(LocalDateTime.of(2026, 8, 2, 10, 0).atZone(zone).toInstant())
+            repository.addPuff(LocalDateTime.of(2026, 8, 2, 13, 0).atZone(zone).toInstant())
+        }
+        statsViewModel.onMonthSelected(YearMonth.of(2026, 8))
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.onNodeWithText(
+            "Você levou em média 3h entre as sessões do mesmo dia neste mês.",
+            substring = true,
+        ).assertIsDisplayed()
+    }
+
+    @Test
+    fun statsTab_displaysAveragePromptWhenMonthHasNoSameDayPair() {
+        val zone = ZoneId.systemDefault()
+        runBlocking {
             repository.addPuff(LocalDateTime.of(2026, 8, 1, 10, 0).atZone(zone).toInstant())
             repository.addPuff(LocalDateTime.of(2026, 8, 2, 13, 0).atZone(zone).toInstant())
         }
@@ -179,7 +196,7 @@ class FumeiAppE2ETest {
 
         composeTestRule.onNodeWithTag("nav_stats").performClick()
         composeTestRule.onNodeWithText(
-            "Você levou em média 27h entre as sessões neste mês.",
+            "Registre mais sessões para calcular a média",
             substring = true,
         ).assertIsDisplayed()
     }

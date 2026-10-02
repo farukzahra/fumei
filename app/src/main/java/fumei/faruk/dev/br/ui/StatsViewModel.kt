@@ -151,7 +151,7 @@ class StatsViewModel(
                     periodTotalLabel = if (total == 1) "1 no mês" else "$total no mês",
                     periodGramsLabel = periodGramsLabel(totalGrams, scope),
                     monthlyAverageIntervalLabel = averageInterval?.let {
-                        "Você levou em média ${SessionIntervalFormat.formatElapsedMillis(it)} entre as sessões neste mês."
+                        "Você levou em média ${SessionIntervalFormat.formatElapsedMillis(it)} entre as sessões do mesmo dia neste mês."
                     } ?: "Registre mais sessões para calcular a média",
                     canGoNext = month.isBefore(YearMonth.from(today)),
                     canGoPrevious = true,
