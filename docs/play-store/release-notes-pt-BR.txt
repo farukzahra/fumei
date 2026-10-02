@@ -1,1 +1,1 @@
-Corrigida a versão atribuída às novidades no histórico do app.
+A média entre sessões nas estatísticas não conta mais a noite inteira. O intervalo entre o último registro de um dia e o primeiro do dia seguinte fica fora do cálculo, então o número exibido passa a refletir o tempo real entre sessões do mesmo dia.

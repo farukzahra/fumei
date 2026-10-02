@@ -1,8 +1,17 @@
 {
-    "currentVersion":  "1.1.1",
-    "versionCode":  18,
-    "updatedAt":  "2026-10-01T22:36:12.214Z",
+    "currentVersion":  "1.1.2",
+    "versionCode":  19,
+    "updatedAt":  "2026-10-02T23:05:11.573Z",
     "entries":  [
+                    {
+                        "version":  "1.1.2",
+                        "versionCode":  19,
+                        "date":  "2026-10-02",
+                        "title":  "Média entre sessões corrigida",
+                        "summary":  "A média mensal entre sessões não conta mais o intervalo entre o último registro de um dia e o primeiro do dia seguinte.",
+                        "type":  "fix",
+                        "commit":  "02d16b7"
+                    },
                     {
                         "version":  "1.1.1",
                         "versionCode":  18,

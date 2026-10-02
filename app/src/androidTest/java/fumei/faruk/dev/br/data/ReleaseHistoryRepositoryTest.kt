@@ -14,16 +14,20 @@ class ReleaseHistoryRepositoryTest {
         val history = ReleaseHistoryRepository(context).load()
 
         assertEquals(
-            "Correção no histórico de novidades",
+            "Média entre sessões corrigida",
             history.entries.first().title,
         )
-        assertEquals("Veja os intervalos e a média mensal", history.entries[1].title)
-        assertEquals("Acentos no histórico de versões", history.entries[2].title)
+        assertEquals(
+            "Correção no histórico de novidades",
+            history.entries[1].title,
+        )
+        assertEquals("Veja os intervalos e a média mensal", history.entries[2].title)
+        assertEquals("Acentos no histórico de versões", history.entries[3].title)
         assertEquals(
             "O histórico de novidades é lido em UTF-8 para preservar os acentos em português.",
-            history.entries[2].summary,
+            history.entries[3].summary,
         )
-        assertEquals("Sessões em gramas", history.entries[3].title)
+        assertEquals("Sessões em gramas", history.entries[4].title)
         assertEquals("Lançamento na Play Store", history.entries.last().title)
     }
 }

@@ -28,8 +28,8 @@ android {
         applicationId = "fumei.faruk.dev.br"
         minSdk = 26
         targetSdk = 36
-        versionCode = 18
-        versionName = "1.1.1"
+        versionCode = 19
+        versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
