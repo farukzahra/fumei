@@ -101,11 +101,17 @@ fun averageSessionIntervalMillis(
         .sorted()
         .toList()
 
-    if (timestamps.size < 2) return null
+    val intervals = timestamps.zipWithNext { earlier, later ->
+        if (localDate(earlier, zone) == localDate(later, zone)) later - earlier else null
+    }.filterNotNull()
 
-    val intervals = timestamps.zipWithNext { earlier, later -> later - earlier }
+    if (intervals.isEmpty()) return null
+
     return intervals.sum() / intervals.size
 }
+
+private fun localDate(timestampMillis: Long, zone: ZoneId): LocalDate =
+    Instant.ofEpochMilli(timestampMillis).atZone(zone).toLocalDate()
 
 fun buildMonthCalendar(
     yearMonth: YearMonth,

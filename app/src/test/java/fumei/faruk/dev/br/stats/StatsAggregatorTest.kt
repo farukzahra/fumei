@@ -56,7 +56,7 @@ class StatsAggregatorTest {
     }
 
     @Test
-    fun averageSessionIntervalMillis_sortsSessionsBeforeAveragingIntervals() {
+    fun averageSessionIntervalMillis_averagesOnlyIntervalsInsideTheSameDay() {
         val month = YearMonth.of(2026, 8)
         val puffs = listOf(
             puffAt(1, LocalDate.of(2026, 8, 2), LocalTime.of(15, 0)),
@@ -64,7 +64,54 @@ class StatsAggregatorTest {
             puffAt(3, LocalDate.of(2026, 8, 2), LocalTime.of(13, 0)),
         )
 
-        assertEquals(14 * 60 * 60 * 1_000L + 30 * 60 * 1_000L, averageSessionIntervalMillis(puffs, month, zone))
+        assertEquals(2 * 60 * 60 * 1_000L, averageSessionIntervalMillis(puffs, month, zone))
+    }
+
+    @Test
+    fun averageSessionIntervalMillis_ignoresIntervalsCrossingMidnight() {
+        val month = YearMonth.of(2026, 8)
+        val puffs = listOf(
+            puffAt(1, LocalDate.of(2026, 8, 1), LocalTime.of(23, 50)),
+            puffAt(2, LocalDate.of(2026, 8, 2), LocalTime.of(0, 10)),
+        )
+
+        assertEquals(null, averageSessionIntervalMillis(puffs, month, zone))
+    }
+
+    @Test
+    fun averageSessionIntervalMillis_countsIntervalEndingBeforeMidnight() {
+        val month = YearMonth.of(2026, 8)
+        val puffs = listOf(
+            puffAt(1, LocalDate.of(2026, 8, 1), LocalTime.of(23, 50)),
+            puffAt(2, LocalDate.of(2026, 8, 1), LocalTime.of(23, 59)),
+        )
+
+        assertEquals(9 * 60 * 1_000L, averageSessionIntervalMillis(puffs, month, zone))
+    }
+
+    @Test
+    fun averageSessionIntervalMillis_skipsCrossDayPairsButKeepsSameDayPairs() {
+        val month = YearMonth.of(2026, 8)
+        val puffs = listOf(
+            puffAt(1, LocalDate.of(2026, 8, 3), LocalTime.of(9, 0)),
+            puffAt(2, LocalDate.of(2026, 8, 2), LocalTime.of(10, 30)),
+            puffAt(3, LocalDate.of(2026, 8, 1), LocalTime.of(20, 0)),
+            puffAt(4, LocalDate.of(2026, 8, 2), LocalTime.of(10, 0)),
+        )
+
+        assertEquals(30 * 60 * 1_000L, averageSessionIntervalMillis(puffs, month, zone))
+    }
+
+    @Test
+    fun averageSessionIntervalMillis_returnsNullWithoutASameDayPair() {
+        val month = YearMonth.of(2026, 8)
+        val puffs = listOf(
+            puffAt(1, LocalDate.of(2026, 8, 1), LocalTime.of(10, 0)),
+            puffAt(2, LocalDate.of(2026, 8, 2), LocalTime.of(10, 0)),
+            puffAt(3, LocalDate.of(2026, 8, 3), LocalTime.of(10, 0)),
+        )
+
+        assertEquals(null, averageSessionIntervalMillis(puffs, month, zone))
     }
 
     @Test
@@ -74,10 +121,10 @@ class StatsAggregatorTest {
             puffAt(1, LocalDate.of(2026, 9, 1), LocalTime.of(10, 0)),
             puffAt(2, LocalDate.of(2026, 7, 31), LocalTime.of(22, 0)),
             puffAt(3, LocalDate.of(2026, 8, 1), LocalTime.of(10, 0)),
-            puffAt(4, LocalDate.of(2026, 8, 2), LocalTime.of(13, 0)),
+            puffAt(4, LocalDate.of(2026, 8, 1), LocalTime.of(13, 0)),
         )
 
-        assertEquals(27 * 60 * 60 * 1_000L, averageSessionIntervalMillis(puffs, month, zone))
+        assertEquals(3 * 60 * 60 * 1_000L, averageSessionIntervalMillis(puffs, month, zone))
     }
 
     @Test
