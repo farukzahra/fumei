@@ -1,13 +1,13 @@
 {
-    "aabSizeBytes":  3177141,
-    "versionName":  "1.1.1",
-    "releaseNotes":  "Corrigida a versão atribuída às novidades no histórico do app.",
-    "generatedAt":  "2026-10-01T22:36:46.791Z",
-    "versionCode":  18,
+    "aabSizeBytes":  3233771,
+    "versionName":  "1.2.0",
+    "releaseNotes":  "Agora o app avisa quando existe versão nova na Play Store. O download roda em segundo plano, sem sair do app, e você reinicia quando quiser. O cartão de atualizações fica na aba Mais.",
+    "generatedAt":  "2026-10-03T14:07:12.859Z",
+    "versionCode":  21,
     "aabPath":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
     "playConsole":  {
                         "arquivo":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
-                        "nomeDaVersao":  "1.1.1",
-                        "notasDaVersao":  "Corrigida a versão atribuída às novidades no histórico do app."
+                        "nomeDaVersao":  "1.2.0",
+                        "notasDaVersao":  "Agora o app avisa quando existe versão nova na Play Store. O download roda em segundo plano, sem sair do app, e você reinicia quando quiser. O cartão de atualizações fica na aba Mais."
                     }
 }
