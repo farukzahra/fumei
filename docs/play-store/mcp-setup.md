@@ -45,6 +45,20 @@ Adicionar em `.cursor/mcp.json` (ou config global do MCP):
 4. Preencher listing, screenshots, política de privacidade
 5. Promover para produção quando validado
 
+## Upload automatizado
+
+`scripts/play-release.ps1` gera o AAB e grava `docs/play-store/last-release.json`.
+Com a chave de serviço em `../secrets/google-play/service-account.json`:
+
+```powershell
+python scripts/play-upload.py --inspect                                  # lista faixas e releases
+python scripts/play-upload.py --track production --status completed      # sobe o AAB da última release
+python scripts/play-upload.py --track internal --status draft            # rascunho na faixa interna
+```
+
+Faixas válidas: `internal`, `alpha`, `beta`, `production`. Estados: `draft`,
+`in_progress`, `halted`, `completed`.
+
 ## Assinatura release
 
 Para produção, configurar keystore em `app/build.gradle.kts` (signingConfigs). Por enquanto o debug APK/AAB usa assinatura de debug.
