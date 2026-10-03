@@ -1,1 +1,1 @@
-A média entre sessões nas estatísticas não conta mais a noite inteira. O intervalo entre o último registro de um dia e o primeiro do dia seguinte fica fora do cálculo, então o número exibido passa a refletir o tempo real entre sessões do mesmo dia.
+Agora o app avisa quando existe versão nova na Play Store. O download roda em segundo plano, sem sair do app, e você reinicia quando quiser. O cartão de atualizações fica na aba Mais.

@@ -1,8 +1,17 @@
 {
-    "currentVersion":  "1.1.2",
-    "versionCode":  19,
-    "updatedAt":  "2026-10-02T23:05:11.573Z",
+    "currentVersion":  "1.2.0",
+    "versionCode":  20,
+    "updatedAt":  "2026-10-03T13:57:17.381Z",
     "entries":  [
+                    {
+                        "version":  "1.2.0",
+                        "versionCode":  20,
+                        "date":  "2026-10-03",
+                        "title":  "Atualização pelo Google Play",
+                        "summary":  "O app avisa quando existe versão nova e baixa em segundo plano. Você reinicia quando quiser. O cartão em Mais mostra o estado, e o app segue sem permissão de internet.",
+                        "type":  "feat",
+                        "commit":  "08a72f8"
+                    },
                     {
                         "version":  "1.1.2",
                         "versionCode":  19,
