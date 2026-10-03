@@ -23,7 +23,10 @@ import fumei.faruk.dev.br.ui.StatsViewModelFactory
 import fumei.faruk.dev.br.data.ReleaseHistoryRepository
 import fumei.faruk.dev.br.ui.SettingsViewModel
 import fumei.faruk.dev.br.ui.SettingsViewModelFactory
+import fumei.faruk.dev.br.ui.UpdateViewModel
+import fumei.faruk.dev.br.ui.UpdateViewModelFactory
 import fumei.faruk.dev.br.ui.theme.FumeiTheme
+import fumei.faruk.dev.br.update.AppUpdaterProvider
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -43,6 +46,15 @@ class MainActivity : ComponentActivity() {
         SettingsViewModelFactory(userSettings)
     }
 
+    private val updateViewModel: UpdateViewModel by viewModels {
+        UpdateViewModelFactory(AppUpdaterProvider.create(applicationContext), userSettings)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateViewModel.onResume()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -59,6 +71,7 @@ class MainActivity : ComponentActivity() {
                 val statsState by statsViewModel.uiState.collectAsState()
                 val dailyGoal by settingsViewModel.dailyGoal.collectAsState()
                 val defaultGrams by settingsViewModel.defaultGramsPerSession.collectAsState()
+                val updateState by updateViewModel.uiState.collectAsState()
                 val aboutState = remember {
                     val history = ReleaseHistoryRepository(applicationContext).load()
                     AboutUiState(
@@ -86,6 +99,11 @@ class MainActivity : ComponentActivity() {
                     onDailyGoalDecrement = settingsViewModel::decrementDailyGoal,
                     onDefaultGramsIncrement = settingsViewModel::incrementDefaultGrams,
                     onDefaultGramsDecrement = settingsViewModel::decrementDefaultGrams,
+                    updateState = updateState,
+                    onUpdateClick = { updateViewModel.onUpdateClick(this) },
+                    onUpdateDismiss = updateViewModel::onPromptDismissed,
+                    onRestartClick = updateViewModel::onRestartClick,
+                    onRestartPostpone = updateViewModel::onRestartPostponed,
                 )
             }
         }

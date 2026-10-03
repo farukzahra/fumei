@@ -1,6 +1,6 @@
 # Política de Privacidade — Fumei
 
-**Última atualização:** 2 de setembro de 2026
+**Última atualização:** 3 de outubro de 2026
 
 ## Resumo
 
@@ -16,6 +16,13 @@ Esses dados **não saem do seu celular**. Não há servidor, conta de usuário, 
 ## Permissões
 
 O Fumei **não solicita permissões** de internet, localização, câmera, contatos ou qualquer outro dado sensível.
+
+## Atualizações
+
+O app pergunta à Play Store se existe versão nova. A resposta vem do próprio
+Google Play instalado no seu celular, e é ele que acessa a internet quando for o
+caso. O Fumei continua sem permissão de internet e nenhum registro de consumo
+sai do aparelho.
 
 ## Exclusão de dados
 

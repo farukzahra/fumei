@@ -42,6 +42,7 @@ import fumei.faruk.dev.br.ui.theme.AppShapes
 import fumei.faruk.dev.br.ui.theme.AppSpacing
 import fumei.faruk.dev.br.ui.theme.FumeiThemeExt
 import fumei.faruk.dev.br.ui.theme.FumeiType
+import fumei.faruk.dev.br.update.UpdateDialogKind
 
 enum class AppTab {
     Home,
@@ -68,6 +69,11 @@ fun FumeiApp(
     onDailyGoalDecrement: () -> Unit,
     onDefaultGramsIncrement: () -> Unit,
     onDefaultGramsDecrement: () -> Unit,
+    updateState: UpdateUiState = UpdateUiState(),
+    onUpdateClick: () -> Unit = {},
+    onUpdateDismiss: () -> Unit = {},
+    onRestartClick: () -> Unit = {},
+    onRestartPostpone: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(AppTab.Home) }
@@ -109,6 +115,9 @@ fun FumeiApp(
                 aboutState = aboutState,
                 dailyGoal = dailyGoal,
                 defaultGramsPerSession = defaultGramsPerSession,
+                updateState = updateState,
+                onUpdateClick = onUpdateClick,
+                onRestartClick = onRestartClick,
                 onDailyGoalIncrement = onDailyGoalIncrement,
                 onDailyGoalDecrement = onDailyGoalDecrement,
                 onDefaultGramsIncrement = onDefaultGramsIncrement,
@@ -116,6 +125,20 @@ fun FumeiApp(
                 modifier = Modifier.padding(innerPadding),
             )
         }
+    }
+
+    when (updateState.dialog) {
+        UpdateDialogKind.Available -> UpdateAvailableDialog(
+            onUpdate = onUpdateClick,
+            onLater = onUpdateDismiss,
+        )
+
+        UpdateDialogKind.ReadyToRestart -> RestartReadyDialog(
+            onRestart = onRestartClick,
+            onLater = onRestartPostpone,
+        )
+
+        null -> Unit
     }
 }
 

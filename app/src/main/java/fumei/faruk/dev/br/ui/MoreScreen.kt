@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -36,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fumei.faruk.dev.br.ui.theme.AppColors
 import fumei.faruk.dev.br.ui.theme.FumeiType
+import fumei.faruk.dev.br.update.UpdateCardAction
+import fumei.faruk.dev.br.update.UpdateCardUi
 
 private enum class MoreRoute {
     Hub,
@@ -48,6 +51,9 @@ fun MoreScreen(
     aboutState: AboutUiState,
     dailyGoal: Int,
     defaultGramsPerSession: Double,
+    updateState: UpdateUiState,
+    onUpdateClick: () -> Unit,
+    onRestartClick: () -> Unit,
     onDailyGoalIncrement: () -> Unit,
     onDailyGoalDecrement: () -> Unit,
     onDefaultGramsIncrement: () -> Unit,
@@ -59,6 +65,9 @@ fun MoreScreen(
     when (route) {
         MoreRoute.Hub -> MoreHubScreen(
             modifier = modifier,
+            updateState = updateState,
+            onUpdateClick = onUpdateClick,
+            onRestartClick = onRestartClick,
             onOpenSettings = { route = MoreRoute.Settings },
             onOpenAbout = { route = MoreRoute.About },
         )
@@ -84,6 +93,9 @@ fun MoreScreen(
 private fun MoreHubScreen(
     onOpenSettings: () -> Unit,
     onOpenAbout: () -> Unit,
+    updateState: UpdateUiState,
+    onUpdateClick: () -> Unit,
+    onRestartClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -123,6 +135,52 @@ private fun MoreHubScreen(
                 testTag = "more_nav_about",
                 onClick = onOpenAbout,
             )
+        }
+        updateState.card?.let { card ->
+            item {
+                UpdateCard(
+                    ui = card,
+                    onUpdate = onUpdateClick,
+                    onRestart = onRestartClick,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun UpdateCard(
+    ui: UpdateCardUi,
+    onUpdate: () -> Unit,
+    onRestart: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AboutSectionCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag("update_card"),
+        title = "Atualizações",
+    ) {
+        Text(
+            text = ui.statusLabel,
+            style = FumeiType.body.copy(fontSize = 14.sp),
+            color = AppColors.Smoke400,
+            modifier = Modifier.testTag("update_card_status"),
+        )
+        if (ui.actionLabel != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(
+                onClick = {
+                    when (ui.action) {
+                        UpdateCardAction.StartUpdate -> onUpdate()
+                        UpdateCardAction.Restart -> onRestart()
+                        null -> Unit
+                    }
+                },
+                modifier = Modifier.testTag("update_card_action"),
+            ) {
+                Text(ui.actionLabel)
+            }
         }
     }
 }

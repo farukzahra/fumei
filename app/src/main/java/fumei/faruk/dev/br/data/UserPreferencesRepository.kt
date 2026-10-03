@@ -18,16 +18,25 @@ interface DefaultGramsStore {
 
 interface UserSettingsStore : DailyGoalStore, DefaultGramsStore
 
+interface UpdatePromptStore {
+    fun observePromptDismissed(): Flow<Boolean>
+
+    suspend fun setPromptDismissed(value: Boolean)
+}
+
 class UserPreferencesRepository(
     context: Context,
-) : UserSettingsStore {
+) : UserSettingsStore, UpdatePromptStore {
     private val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     private val dailyGoalState = MutableStateFlow(readDailyGoal())
     private val defaultGramsState = MutableStateFlow(readDefaultGrams())
+    private val promptDismissedState = MutableStateFlow(readPromptDismissed())
 
     override fun observeDailyGoal(): Flow<Int> = dailyGoalState.asStateFlow()
 
     override fun observeDefaultGramsPerSession(): Flow<Double> = defaultGramsState.asStateFlow()
+
+    override fun observePromptDismissed(): Flow<Boolean> = promptDismissedState.asStateFlow()
 
     override suspend fun setDailyGoal(value: Int) {
         val normalized = DailyProgress.normalizedGoal(value)
@@ -40,6 +49,13 @@ class UserPreferencesRepository(
         prefs.edit().putFloat(KEY_DEFAULT_GRAMS, normalized.toFloat()).apply()
         defaultGramsState.value = normalized
     }
+
+    override suspend fun setPromptDismissed(value: Boolean) {
+        prefs.edit().putBoolean(KEY_PROMPT_DISMISSED, value).apply()
+        promptDismissedState.value = value
+    }
+
+    private fun readPromptDismissed(): Boolean = prefs.getBoolean(KEY_PROMPT_DISMISSED, false)
 
     private fun readDailyGoal(): Int {
         return DailyProgress.normalizedGoal(
@@ -60,5 +76,6 @@ class UserPreferencesRepository(
         private const val PREFS_NAME = "fumei_user_prefs"
         private const val KEY_DAILY_GOAL = "daily_goal"
         private const val KEY_DEFAULT_GRAMS = "default_grams_per_session"
+        private const val KEY_PROMPT_DISMISSED = "update_prompt_dismissed"
     }
 }
