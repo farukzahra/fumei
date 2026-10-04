@@ -1,13 +1,13 @@
 {
-    "aabSizeBytes":  3233771,
-    "versionName":  "1.2.0",
-    "releaseNotes":  "Agora o app avisa quando existe versão nova na Play Store. O download roda em segundo plano, sem sair do app, e você reinicia quando quiser. O cartão de atualizações fica na aba Mais.",
-    "generatedAt":  "2026-10-03T14:07:12.859Z",
-    "versionCode":  21,
+    "aabSizeBytes":  3256288,
+    "versionName":  "1.3.0",
+    "releaseNotes":  "O resumo das estatísticas ficou mais claro: sessões e gramas com rótulo, e a média entre sessões do mesmo dia em destaque. Agora você também exporta seus registros em CSV, na visão de mês, ano ou tudo.",
+    "generatedAt":  "2026-10-04T15:04:27.922Z",
+    "versionCode":  23,
     "aabPath":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
     "playConsole":  {
                         "arquivo":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
-                        "nomeDaVersao":  "1.2.0",
-                        "notasDaVersao":  "Agora o app avisa quando existe versão nova na Play Store. O download roda em segundo plano, sem sair do app, e você reinicia quando quiser. O cartão de atualizações fica na aba Mais."
+                        "nomeDaVersao":  "1.3.0",
+                        "notasDaVersao":  "O resumo das estatísticas ficou mais claro: sessões e gramas com rótulo, e a média entre sessões do mesmo dia em destaque. Agora você também exporta seus registros em CSV, na visão de mês, ano ou tudo."
                     }
 }

@@ -1,11 +1,11 @@
 {
     "currentVersion":  "1.3.0",
-    "versionCode":  22,
-    "updatedAt":  "2026-10-04T13:53:03.939Z",
+    "versionCode":  23,
+    "updatedAt":  "2026-10-04T15:03:04.198Z",
     "entries":  [
                     {
                         "version":  "1.3.0",
-                        "versionCode":  22,
+                        "versionCode":  23,
                         "date":  "2026-10-04",
                         "title":  "Estatísticas mais claras e exportação em CSV",
                         "summary":  "O resumo do mês separa sessões, gramas e a média entre sessões do mesmo dia, cada um com seu rótulo. E dá para exportar os registros em CSV na visão de mês, ano ou tudo.",
