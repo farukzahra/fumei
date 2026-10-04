@@ -1,1 +1,1 @@
-Agora o app avisa quando existe versão nova na Play Store. O download roda em segundo plano, sem sair do app, e você reinicia quando quiser. O cartão de atualizações fica na aba Mais.
+O resumo das estatísticas ficou mais claro: sessões e gramas com rótulo, e a média entre sessões do mesmo dia em destaque. Agora você também exporta seus registros em CSV, na visão de mês, ano ou tudo.
