@@ -3,12 +3,18 @@ package fumei.faruk.dev.br
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import fumei.faruk.dev.br.data.AppDatabase
 import fumei.faruk.dev.br.data.PuffRepository
@@ -21,6 +27,7 @@ import fumei.faruk.dev.br.ui.MainViewModelFactory
 import fumei.faruk.dev.br.ui.StatsViewModel
 import fumei.faruk.dev.br.ui.StatsViewModelFactory
 import fumei.faruk.dev.br.data.ReleaseHistoryRepository
+import fumei.faruk.dev.br.export.CsvExport
 import fumei.faruk.dev.br.ui.SettingsViewModel
 import fumei.faruk.dev.br.ui.SettingsViewModelFactory
 import fumei.faruk.dev.br.ui.UpdateViewModel
@@ -72,6 +79,28 @@ class MainActivity : ComponentActivity() {
                 val dailyGoal by settingsViewModel.dailyGoal.collectAsState()
                 val defaultGrams by settingsViewModel.defaultGramsPerSession.collectAsState()
                 val updateState by updateViewModel.uiState.collectAsState()
+                val exportRequest by statsViewModel.exportRequest.collectAsState()
+                val context = LocalContext.current
+                var pendingExport by remember { mutableStateOf<CsvExport?>(null) }
+                val saveExportLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.CreateDocument("text/csv"),
+                ) { uri ->
+                    val payload = pendingExport
+                    if (uri != null && payload != null) {
+                        context.contentResolver.openOutputStream(uri)?.use { stream ->
+                            stream.write(payload.content.toByteArray(Charsets.UTF_8))
+                        }
+                    }
+                    pendingExport = null
+                }
+                LaunchedEffect(exportRequest) {
+                    val payload = exportRequest
+                    if (payload != null) {
+                        pendingExport = payload
+                        saveExportLauncher.launch(payload.fileName)
+                        statsViewModel.onExportHandled()
+                    }
+                }
                 val aboutState = remember {
                     val history = ReleaseHistoryRepository(applicationContext).load()
                     AboutUiState(
@@ -95,6 +124,7 @@ class MainActivity : ComponentActivity() {
                     onStatsTitleClick = statsViewModel::onPeriodTitleClick,
                     onStatsMonthSelected = statsViewModel::onMonthSelected,
                     onStatsYearSelected = statsViewModel::onYearSelected,
+                    onExportCsv = statsViewModel::onExportClick,
                     onDailyGoalIncrement = settingsViewModel::incrementDailyGoal,
                     onDailyGoalDecrement = settingsViewModel::decrementDailyGoal,
                     onDefaultGramsIncrement = settingsViewModel::incrementDefaultGrams,

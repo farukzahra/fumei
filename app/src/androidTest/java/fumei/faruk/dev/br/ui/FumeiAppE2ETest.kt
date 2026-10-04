@@ -3,6 +3,7 @@ package fumei.faruk.dev.br.ui
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -191,8 +192,9 @@ class FumeiAppE2ETest {
             composeTestRule.onAllNodesWithTag("stats_period_title").fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithTag("stats_month_grid").assertIsDisplayed()
-        composeTestRule.onNodeWithText("2 no mês", substring = true).assertIsDisplayed()
-        composeTestRule.onNodeWithText("g no mês", substring = true).assertIsDisplayed()
+        composeTestRule.onNodeWithTag("stats_summary_sessions").assertTextEquals("2")
+        composeTestRule.onNodeWithText("SESSÕES NO MÊS").assertIsDisplayed()
+        composeTestRule.onNodeWithText("GRAMAS NO MÊS").assertIsDisplayed()
     }
 
     @Test
@@ -206,10 +208,8 @@ class FumeiAppE2ETest {
         setFumeiApp()
 
         composeTestRule.onNodeWithTag("nav_stats").performClick()
-        composeTestRule.onNodeWithText(
-            "Você levou em média 3h entre as sessões do mesmo dia neste mês.",
-            substring = true,
-        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag("stats_summary_average").assertTextEquals("3h")
+        composeTestRule.onNodeWithText("MÉDIA ENTRE SESSÕES DO MESMO DIA").assertIsDisplayed()
     }
 
     @Test
@@ -223,10 +223,7 @@ class FumeiAppE2ETest {
         setFumeiApp()
 
         composeTestRule.onNodeWithTag("nav_stats").performClick()
-        composeTestRule.onNodeWithText(
-            "Registre mais sessões para calcular a média",
-            substring = true,
-        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag("stats_summary_average").assertTextEquals("sem dados")
     }
 
     @Test
@@ -235,10 +232,90 @@ class FumeiAppE2ETest {
         setFumeiApp()
 
         composeTestRule.onNodeWithTag("nav_stats").performClick()
-        composeTestRule.onNodeWithText(
-            "Registre mais sessões para calcular a média",
-            substring = true,
-        ).assertIsDisplayed()
+        composeTestRule.onNodeWithTag("stats_summary_average").assertTextEquals("sem dados")
+    }
+
+    @Test
+    fun statsTab_yearScopeHidesTheAverageAndLabelsTheYear() {
+        seedPuffsForCurrentMonth(count = 2)
+        refreshViewModels()
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.onNodeWithTag("stats_period_title").performClick()
+
+        composeTestRule.onNodeWithText("SESSÕES NO ANO").assertIsDisplayed()
+        composeTestRule.onNodeWithText("GRAMAS NO ANO").assertIsDisplayed()
+        composeTestRule.onNodeWithText("MÉDIA ENTRE SESSÕES DO MESMO DIA").assertDoesNotExist()
+    }
+
+    @Test
+    fun statsTab_exportUsesTheSelectedMonth() {
+        val zone = ZoneId.systemDefault()
+        runBlocking {
+            repository.addPuff(LocalDateTime.of(2026, 7, 31, 23, 0).atZone(zone).toInstant(), 0.9)
+            repository.addPuff(LocalDateTime.of(2026, 8, 1, 10, 0).atZone(zone).toInstant(), 0.3)
+            repository.addPuff(LocalDateTime.of(2026, 8, 2, 13, 0).atZone(zone).toInstant(), 0.5)
+        }
+        statsViewModel.onMonthSelected(YearMonth.of(2026, 8))
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.onNodeWithText("Exportar CSV do mês").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("export_csv_button").performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) { statsViewModel.exportRequest.value != null }
+        val export = statsViewModel.exportRequest.value!!
+        assertEquals("fumei-2026-08.csv", export.fileName)
+        assertEquals(
+            "data;hora;gramas\r\n01/08/2026;10:00;0,3\r\n02/08/2026;13:00;0,5\r\n",
+            export.content,
+        )
+    }
+
+    @Test
+    fun statsTab_exportUsesTheSelectedYear() {
+        val zone = ZoneId.systemDefault()
+        runBlocking {
+            repository.addPuff(LocalDateTime.of(2025, 12, 31, 20, 0).atZone(zone).toInstant(), 0.3)
+            repository.addPuff(LocalDateTime.of(2026, 3, 5, 9, 0).atZone(zone).toInstant(), 0.4)
+        }
+        statsViewModel.onMonthSelected(YearMonth.of(2026, 3))
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.onNodeWithTag("stats_period_title").performClick()
+        composeTestRule.onNodeWithText("Exportar CSV do ano").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("export_csv_button").performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) { statsViewModel.exportRequest.value != null }
+        val export = statsViewModel.exportRequest.value!!
+        assertEquals("fumei-2026.csv", export.fileName)
+        assertEquals("data;hora;gramas\r\n05/03/2026;09:00;0,4\r\n", export.content)
+    }
+
+    @Test
+    fun statsTab_exportUsesEveryRecordWhenShowingAllYears() {
+        val zone = ZoneId.systemDefault()
+        runBlocking {
+            repository.addPuff(LocalDateTime.of(2025, 12, 31, 20, 0).atZone(zone).toInstant(), 0.3)
+            repository.addPuff(LocalDateTime.of(2026, 3, 5, 9, 0).atZone(zone).toInstant(), 0.4)
+        }
+        setFumeiApp()
+
+        composeTestRule.onNodeWithTag("nav_stats").performClick()
+        composeTestRule.onNodeWithTag("stats_period_title").performClick()
+        composeTestRule.onNodeWithTag("stats_period_title").performClick()
+        composeTestRule.onNodeWithText("Exportar CSV de tudo").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("export_csv_button").performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) { statsViewModel.exportRequest.value != null }
+        val export = statsViewModel.exportRequest.value!!
+        assertEquals("fumei-completo.csv", export.fileName)
+        assertEquals(
+            "data;hora;gramas\r\n31/12/2025;20:00;0,3\r\n05/03/2026;09:00;0,4\r\n",
+            export.content,
+        )
     }
 
     @Test
@@ -370,6 +447,7 @@ class FumeiAppE2ETest {
                     onStatsTitleClick = statsViewModel::onPeriodTitleClick,
                     onStatsMonthSelected = statsViewModel::onMonthSelected,
                     onStatsYearSelected = statsViewModel::onYearSelected,
+                    onExportCsv = statsViewModel::onExportClick,
                     onDailyGoalIncrement = settingsViewModel::incrementDailyGoal,
                     onDailyGoalDecrement = settingsViewModel::decrementDailyGoal,
                     onDefaultGramsIncrement = settingsViewModel::incrementDefaultGrams,

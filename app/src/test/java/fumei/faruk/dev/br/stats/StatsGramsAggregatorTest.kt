@@ -43,7 +43,12 @@ class StatsGramsAggregatorTest {
     }
 
     @Test
-    fun periodGramsLabel_formatsSuffixForMonth() {
-        assertEquals("13,5 g no mês", periodGramsLabel(13.5, StatsScope.MONTH))
+    fun periodCaptions_changeWithScope() {
+        assertEquals("sessões no mês", periodCountCaption(StatsScope.MONTH))
+        assertEquals("sessões no ano", periodCountCaption(StatsScope.YEAR))
+        assertEquals("sessões no total", periodCountCaption(StatsScope.YEARS))
+        assertEquals("gramas no mês", periodGramsCaption(StatsScope.MONTH))
+        assertEquals("gramas no ano", periodGramsCaption(StatsScope.YEAR))
+        assertEquals("gramas no total", periodGramsCaption(StatsScope.YEARS))
     }
 }

@@ -184,14 +184,16 @@ fun yearGramsTotal(
 
 fun totalGrams(puffs: List<PuffEntity>): Double = puffs.sumOf { it.grams }
 
-fun periodGramsLabel(totalGrams: Double, scope: StatsScope): String {
-    val formatted = ConsumptionFormat.formatGramsTotal(totalGrams)
-    val suffix = when (scope) {
-        StatsScope.MONTH -> "no mês"
-        StatsScope.YEAR -> "no ano"
-        StatsScope.YEARS -> "no total"
-    }
-    return "$formatted g $suffix"
+fun periodCountCaption(scope: StatsScope): String = when (scope) {
+    StatsScope.MONTH -> "sessões no mês"
+    StatsScope.YEAR -> "sessões no ano"
+    StatsScope.YEARS -> "sessões no total"
+}
+
+fun periodGramsCaption(scope: StatsScope): String = when (scope) {
+    StatsScope.MONTH -> "gramas no mês"
+    StatsScope.YEAR -> "gramas no ano"
+    StatsScope.YEARS -> "gramas no total"
 }
 
 fun yearsRange(

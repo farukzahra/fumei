@@ -65,6 +65,7 @@ fun FumeiApp(
     onStatsTitleClick: () -> Unit,
     onStatsMonthSelected: (java.time.YearMonth) -> Unit,
     onStatsYearSelected: (Int) -> Unit,
+    onExportCsv: () -> Unit = {},
     onDailyGoalIncrement: () -> Unit,
     onDailyGoalDecrement: () -> Unit,
     onDefaultGramsIncrement: () -> Unit,
@@ -109,6 +110,7 @@ fun FumeiApp(
                 onPeriodTitleClick = onStatsTitleClick,
                 onMonthSelected = onStatsMonthSelected,
                 onYearSelected = onStatsYearSelected,
+                onExportCsv = onExportCsv,
                 modifier = Modifier.padding(innerPadding),
             )
             AppTab.About -> MoreScreen(

@@ -7,6 +7,11 @@ import androidx.lifecycle.viewModelScope
 import fumei.faruk.dev.br.data.AppDatabase
 import fumei.faruk.dev.br.data.PuffEntity
 import fumei.faruk.dev.br.data.PuffRepository
+import fumei.faruk.dev.br.export.CsvExport
+import fumei.faruk.dev.br.export.PuffCsv
+import fumei.faruk.dev.br.export.exportLabelFor
+import fumei.faruk.dev.br.export.exportRangeFor
+import fumei.faruk.dev.br.export.fileNameFor
 import fumei.faruk.dev.br.stats.MonthCell
 import fumei.faruk.dev.br.stats.StatsScope
 import fumei.faruk.dev.br.stats.YearCell
@@ -20,7 +25,8 @@ import fumei.faruk.dev.br.stats.averageSessionIntervalMillis
 import fumei.faruk.dev.br.stats.buildMonthCalendar
 import fumei.faruk.dev.br.stats.monthGramsTotal
 import fumei.faruk.dev.br.stats.monthTotal
-import fumei.faruk.dev.br.stats.periodGramsLabel
+import fumei.faruk.dev.br.stats.periodCountCaption
+import fumei.faruk.dev.br.stats.periodGramsCaption
 import fumei.faruk.dev.br.stats.totalGrams
 import fumei.faruk.dev.br.stats.yearGramsTotal
 import fumei.faruk.dev.br.stats.yearTotal
@@ -28,9 +34,11 @@ import fumei.faruk.dev.br.stats.yearsRange
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
@@ -50,6 +58,9 @@ class StatsViewModel(
     private val scopeState = MutableStateFlow(StatsScope.MONTH)
     private val anchorMonth = MutableStateFlow(YearMonth.now())
     private val anchorYear = MutableStateFlow(LocalDate.now(zone).year)
+    private val exportState = MutableStateFlow<CsvExport?>(null)
+
+    val exportRequest: StateFlow<CsvExport?> = exportState.asStateFlow()
 
     val uiState: StateFlow<StatsUiState> = combine(
         repository.observeAllPuffs(),
@@ -114,6 +125,26 @@ class StatsViewModel(
         scopeState.value = StatsScope.YEAR
     }
 
+    fun onExportClick() {
+        viewModelScope.launch {
+            val scope = scopeState.value
+            val range = exportRangeFor(scope, anchorMonth.value, anchorYear.value, zone)
+            val puffs = if (range == null) {
+                repository.allPuffs()
+            } else {
+                repository.puffsBetween(range.startMillis, range.endMillis)
+            }
+            exportState.value = CsvExport(
+                fileName = fileNameFor(scope, anchorMonth.value, anchorYear.value),
+                content = PuffCsv.build(puffs, zone),
+            )
+        }
+    }
+
+    fun onExportHandled() {
+        exportState.value = null
+    }
+
     private fun buildUiState(
         puffs: List<PuffEntity>,
         scope: StatsScope,
@@ -148,11 +179,21 @@ class StatsViewModel(
                             if (char.isLowerCase()) char.titlecase(locale) else char.toString()
                         },
                     periodTotal = total,
-                    periodTotalLabel = if (total == 1) "1 no mês" else "$total no mês",
-                    periodGramsLabel = periodGramsLabel(totalGrams, scope),
-                    monthlyAverageIntervalLabel = averageInterval?.let {
-                        "Você levou em média ${SessionIntervalFormat.formatElapsedMillis(it)} entre as sessões do mesmo dia neste mês."
-                    } ?: "Registre mais sessões para calcular a média",
+                    sessionsStat = StatsSummaryStat(
+                        valueLabel = total.toString(),
+                        captionLabel = periodCountCaption(scope),
+                    ),
+                    gramsStat = StatsSummaryStat(
+                        valueLabel = "${ConsumptionFormat.formatGramsTotal(totalGrams)} g",
+                        captionLabel = periodGramsCaption(scope),
+                    ),
+                    averageStat = StatsSummaryStat(
+                        valueLabel = averageInterval?.let {
+                            SessionIntervalFormat.formatElapsedMillis(it)
+                        } ?: "sem dados",
+                        captionLabel = "média entre sessões do mesmo dia",
+                    ),
+                    exportLabel = exportLabelFor(scope),
                     canGoNext = month.isBefore(YearMonth.from(today)),
                     canGoPrevious = true,
                     zoomHint = "Toque no título para ver o ano",
@@ -175,8 +216,15 @@ class StatsViewModel(
                     scope = scope,
                     periodLabel = year.toString(),
                     periodTotal = total,
-                    periodTotalLabel = if (total == 1) "1 no ano" else "$total no ano",
-                    periodGramsLabel = periodGramsLabel(totalGrams, scope),
+                    sessionsStat = StatsSummaryStat(
+                        valueLabel = total.toString(),
+                        captionLabel = periodCountCaption(scope),
+                    ),
+                    gramsStat = StatsSummaryStat(
+                        valueLabel = "${ConsumptionFormat.formatGramsTotal(totalGrams)} g",
+                        captionLabel = periodGramsCaption(scope),
+                    ),
+                    exportLabel = exportLabelFor(scope),
                     canGoNext = year < today.year,
                     canGoPrevious = true,
                     zoomHint = "Toque em um mês para ver os dias",
@@ -199,8 +247,15 @@ class StatsViewModel(
                     scope = scope,
                     periodLabel = "Todos os anos",
                     periodTotal = total,
-                    periodTotalLabel = if (total == 1) "1 no total" else "$total no total",
-                    periodGramsLabel = periodGramsLabel(allGrams, scope),
+                    sessionsStat = StatsSummaryStat(
+                        valueLabel = total.toString(),
+                        captionLabel = periodCountCaption(scope),
+                    ),
+                    gramsStat = StatsSummaryStat(
+                        valueLabel = "${ConsumptionFormat.formatGramsTotal(allGrams)} g",
+                        captionLabel = periodGramsCaption(scope),
+                    ),
+                    exportLabel = exportLabelFor(scope),
                     canGoNext = false,
                     canGoPrevious = false,
                     zoomHint = "Toque em um ano para ver os meses",

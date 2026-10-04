@@ -13,6 +13,8 @@ O app salva localmente:
 
 Esses dados **não saem do seu celular**. Não há servidor, conta de usuário, login ou sincronização na nuvem.
 
+Você pode exportar seus registros em CSV. O arquivo é salvo no local que você escolher, direto pelo seletor do Android.
+
 ## Permissões
 
 O Fumei **não solicita permissões** de internet, localização, câmera, contatos ou qualquer outro dado sensível.

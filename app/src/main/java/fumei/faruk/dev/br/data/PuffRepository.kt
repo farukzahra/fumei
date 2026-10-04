@@ -3,6 +3,7 @@ package fumei.faruk.dev.br.data
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -74,4 +75,9 @@ class PuffRepository(private val dao: PuffDao) {
     suspend fun countAllPuffs(): Int = dao.countAll()
 
     fun observeAllPuffs(): Flow<List<PuffEntity>> = dao.observeAllPuffs()
+
+    suspend fun allPuffs(): List<PuffEntity> = dao.observeAllPuffs().first()
+
+    suspend fun puffsBetween(startMillis: Long, endMillis: Long): List<PuffEntity> =
+        dao.getPuffsBetween(startMillis, endMillis)
 }

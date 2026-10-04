@@ -1,5 +1,7 @@
 package fumei.faruk.dev.br.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,29 +19,37 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fumei.faruk.dev.br.stats.StatsScope
 import fumei.faruk.dev.br.ui.ConsumptionFormat
+import fumei.faruk.dev.br.ui.theme.AppColors
+import fumei.faruk.dev.br.ui.theme.FumeiType
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -51,6 +61,7 @@ fun StatsScreen(
     onPeriodTitleClick: () -> Unit,
     onMonthSelected: (java.time.YearMonth) -> Unit,
     onYearSelected: (Int) -> Unit,
+    onExportCsv: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val locale = Locale.forLanguageTag("pt-BR")
@@ -64,9 +75,9 @@ fun StatsScreen(
     ) {
         StatsPeriodHeader(
             label = uiState.periodLabel,
-            totalLabel = uiState.periodTotalLabel,
-            gramsLabel = uiState.periodGramsLabel,
-            monthlyAverageIntervalLabel = uiState.monthlyAverageIntervalLabel,
+            sessionsStat = uiState.sessionsStat,
+            gramsStat = uiState.gramsStat,
+            averageStat = uiState.averageStat,
             zoomHint = uiState.zoomHint,
             canGoPrevious = uiState.canGoPrevious,
             canGoNext = uiState.canGoNext,
@@ -74,6 +85,19 @@ fun StatsScreen(
             onNext = onNextPeriod,
             onTitleClick = onPeriodTitleClick,
         )
+
+        OutlinedButton(
+            onClick = onExportCsv,
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("export_csv_button"),
+            shape = RoundedCornerShape(14.dp),
+        ) {
+            Text(
+                text = uiState.exportLabel,
+                style = FumeiType.button,
+            )
+        }
 
         when (uiState.scope) {
             StatsScope.MONTH -> {
@@ -136,13 +160,12 @@ fun StatsScreen(
         }
     }
 }
-
 @Composable
 private fun StatsPeriodHeader(
     label: String,
-    totalLabel: String,
-    gramsLabel: String,
-    monthlyAverageIntervalLabel: String?,
+    sessionsStat: StatsSummaryStat,
+    gramsStat: StatsSummaryStat,
+    averageStat: StatsSummaryStat?,
     zoomHint: String,
     canGoPrevious: Boolean,
     canGoNext: Boolean,
@@ -151,12 +174,14 @@ private fun StatsPeriodHeader(
     onTitleClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val shape = RoundedCornerShape(20.dp)
     Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .border(1.dp, AppColors.Ash750, shape)
+            .testTag("stats_period_card"),
+        shape = shape,
+        colors = CardDefaults.cardColors(containerColor = AppColors.Ash850),
     ) {
         Column(
             modifier = Modifier
@@ -177,41 +202,19 @@ private fun StatsPeriodHeader(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Período anterior",
+                        tint = AppColors.Paper100,
                     )
                 }
-                Column(
+                Text(
+                    text = label,
+                    style = FumeiType.displayLabel,
+                    color = AppColors.Paper100,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .weight(1f)
                         .clickable(onClick = onTitleClick)
                         .testTag("stats_period_title"),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        textAlign = TextAlign.Center,
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            append(totalLabel)
-                            if (gramsLabel.isNotBlank()) {
-                                append("\n")
-                                withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                    append(gramsLabel)
-                                }
-                            }
-                            if (monthlyAverageIntervalLabel != null) {
-                                append("\n")
-                                append(monthlyAverageIntervalLabel)
-                            }
-                        },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.testTag("stats_period_summary"),
-                    )
-                }
+                )
                 IconButton(
                     onClick = onNext,
                     enabled = canGoNext,
@@ -220,17 +223,91 @@ private fun StatsPeriodHeader(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Próximo período",
+                        tint = AppColors.Paper100.copy(alpha = if (canGoNext) 1f else 0.3f),
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(6.dp))
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                SummaryStatBlock(
+                    stat = sessionsStat,
+                    valueColor = AppColors.Paper100,
+                    blockTestTag = "stats_summary_sessions",
+                    modifier = Modifier.weight(1f),
+                )
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(56.dp)
+                        .background(AppColors.Smoke400.copy(alpha = 0.25f)),
+                )
+                SummaryStatBlock(
+                    stat = gramsStat,
+                    valueColor = AppColors.Ember500,
+                    blockTestTag = "stats_summary_grams",
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            if (averageStat != null) {
+                Spacer(modifier = Modifier.height(14.dp))
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = AppColors.Smoke400.copy(alpha = 0.2f),
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                SummaryStatBlock(
+                    stat = averageStat,
+                    valueColor = AppColors.Ember300,
+                    valueSize = 24.sp,
+                    blockTestTag = "stats_summary_average",
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = zoomHint,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f),
+                style = FumeiType.body.copy(fontSize = 13.sp),
+                color = AppColors.Smoke400,
                 textAlign = TextAlign.Center,
             )
         }
+    }
+}
+
+@Composable
+private fun SummaryStatBlock(
+    stat: StatsSummaryStat,
+    valueColor: Color,
+    blockTestTag: String,
+    modifier: Modifier = Modifier,
+    valueSize: TextUnit = 40.sp,
+) {
+    val locale = Locale.forLanguageTag("pt-BR")
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stat.valueLabel,
+            style = FumeiType.displayCount.copy(fontSize = valueSize),
+            color = valueColor,
+            maxLines = 1,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.testTag(blockTestTag),
+        )
+        Text(
+            text = stat.captionLabel.uppercase(locale),
+            style = FumeiType.eyebrow.copy(fontSize = 10.sp, letterSpacing = 1.6.sp),
+            color = AppColors.Smoke400,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
