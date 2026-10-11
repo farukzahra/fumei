@@ -1,11 +1,71 @@
 {
   "version": 1,
   "skills": {
+    "android-playstore-setup": {
+      "source": "hitoshura25/claude-devtools",
+      "sourceType": "github",
+      "skillPath": "skills/android-playstore-setup/SKILL.md",
+      "computedHash": "ed34fc3b80c6cf3736772cd920b19d5688994eadb6a1348dc6ab5ba2e2265f9b"
+    },
+    "ask-before-architecture": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ask-before-architecture/SKILL.md",
+      "computedHash": "639c5ec8415032eaac1722e19b11dfbc426b516cae0b38378c3316bb867f9248"
+    },
+    "automate-before-manual": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/automate-before-manual/SKILL.md",
+      "computedHash": "5667493257e61810743da5c16336159e179210176b6a97ee6a1e77c72fb594e8"
+    },
     "caveman-commit": {
       "source": "farukzahra/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/caveman-commit/SKILL.md",
       "computedHash": "f028652defd5fdeddcce2994083cb1a7b201ee827bba8e2495546ee159fca3de"
+    },
+    "diagrams-mermaid": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/diagrams-mermaid/SKILL.md",
+      "computedHash": "e8c2b5d132eee066c8412fe3a244f5dff626a03d64153e4b5283a2ef85cfb8fa"
+    },
+    "dont-be-lazy": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/dont-be-lazy/SKILL.md",
+      "computedHash": "b0feb69594448cb2561e20ce1c43ded74b7d85d08836361bbb28ea71c1890c43"
+    },
+    "dont-forget": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/dont-forget/SKILL.md",
+      "computedHash": "d609d1d25d12a9a5d895c7fbaf8a45871488d3e505c523cd720dde75ffa982e8"
+    },
+    "find-job": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-job/SKILL.md",
+      "computedHash": "f06df7d896c06915b1a49b28e50793a5ef67eea1c59216ff1d5cd4363284774e"
+    },
+    "finish-with-dev-server": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/finish-with-dev-server/SKILL.md",
+      "computedHash": "7ffc870d76d2636813c5697233a1a886e32fa5092b2e7c1a7fe34610a24ac275"
+    },
+    "google-calendar-mcp": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/google-calendar-mcp/SKILL.md",
+      "computedHash": "62e361b364353d1ed8444ad9cb36c629d99021ac4181e76bad7f9e3555a00856"
+    },
+    "handoff": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/handoff/SKILL.md",
+      "computedHash": "00e2d31992d62490083ed2fa2fc2a4418362f765875a59e7a3dc52836f826ab2"
     },
     "humanizer": {
       "source": "blader/humanizer",
@@ -13,11 +73,53 @@
       "skillPath": "SKILL.md",
       "computedHash": "d1a90f19fa4c39cb8105998bf38a6e6a41788e3b4329be086952efa6a3aa362c"
     },
+    "init-fmz": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/init-fmz/SKILL.md",
+      "computedHash": "d011eea55240f10e86bad9ece7246e3bbf80c9ead3394a33b785cf295b41fd51"
+    },
+    "instagram-chrome-post": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/instagram-chrome-post/SKILL.md",
+      "computedHash": "6082c4399bb120cfaf64d5b3a14eec3b1d9f54e070178caaeaf8f4d84834ede9"
+    },
+    "mobile-android-design": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/ui-design/skills/mobile-android-design/SKILL.md",
+      "computedHash": "143a60d6a0744a5058adf984e3a64b75cd2ef3714a15557f4ff6fd95e39ff23a"
+    },
+    "project-init": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/project-init/SKILL.md",
+      "computedHash": "a2c2a24ff6dc05293c850cd092f18a1b1c251df46c9f7d6ef0ad260addfd4472"
+    },
+    "recap": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/recap/SKILL.md",
+      "computedHash": "d0e12d72b0c70473fe785d177f729f1ab098d821d6b49ef619f8da0c182cdcd2"
+    },
     "semantic-version": {
       "source": "farukzahra/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/semantic-version/SKILL.md",
       "computedHash": "0d736dc574837851509a5c8438bd5441f251632b0101af45c437e2d0cc6a97f5"
+    },
+    "ui-change-e2e": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ui-change-e2e/SKILL.md",
+      "computedHash": "1fb18fb4979ad68f00fe39c158ee71854dfd933528ebe8b89a6d82a633f6ab0d"
+    },
+    "validate-before-share": {
+      "source": "farukzahra/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/validate-before-share/SKILL.md",
+      "computedHash": "9bf78f4e6836d04eca5b593a659bc8cb603352cdeba24b45421a690d1358299e"
     }
   }
 }

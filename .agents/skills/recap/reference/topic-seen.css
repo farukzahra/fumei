@@ -1,0 +1,52 @@
+.topics-hint {
+  margin: 0 0 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.topic {
+  position: relative;
+  cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.15rem 1.25rem 1.15rem 1.35rem;
+  border-left: 3px solid var(--primary);
+  transition: opacity 0.2s ease, filter 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+.topic:hover:not(.topic--seen) {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+.topic:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+.topic--seen {
+  opacity: 0.52;
+  filter: saturate(0.65);
+  border-left-color: var(--muted);
+}
+.topic--seen::after {
+  content: "Visto";
+  position: absolute;
+  top: 0.85rem;
+  right: 1rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+.chip--progress {
+  border-color: var(--border-strong);
+  color: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .topic { transition: none; }
+  .topic:hover:not(.topic--seen) { transform: none; }
+}
