@@ -37,12 +37,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fumei.faruk.dev.br.ui.theme.AppColors
 import fumei.faruk.dev.br.ui.theme.AppShapes
 import fumei.faruk.dev.br.ui.theme.AppSpacing
 import fumei.faruk.dev.br.ui.theme.FumeiThemeExt
 import fumei.faruk.dev.br.ui.theme.FumeiType
 import fumei.faruk.dev.br.update.UpdateDialogKind
+import kotlinx.coroutines.flow.StateFlow
 
 enum class AppTab {
     Home,
@@ -57,6 +59,7 @@ fun FumeiApp(
     aboutState: AboutUiState,
     dailyGoal: Int,
     defaultGramsPerSession: Double,
+    elapsedSinceLastPuff: StateFlow<String?>,
     onFumeiClick: () -> Unit,
     onEditPuff: (Long, Long, Double) -> Unit,
     onDeletePuff: (Long) -> Unit,
@@ -87,7 +90,10 @@ fun FumeiApp(
                 modifier = Modifier.background(MaterialTheme.colorScheme.background),
             ) {
                 if (selectedTab == AppTab.Home) {
-                    RegisterActionButton(onClick = onFumeiClick)
+                    RegisterActionButton(
+                        onClick = onFumeiClick,
+                        elapsedSinceLastPuff = elapsedSinceLastPuff,
+                    )
                 }
                 AppBottomBar(
                     selectedTab = selectedTab,
@@ -147,8 +153,10 @@ fun FumeiApp(
 @Composable
 fun RegisterActionButton(
     onClick: () -> Unit,
+    elapsedSinceLastPuff: StateFlow<String?>,
     modifier: Modifier = Modifier,
 ) {
+    val elapsedLabel by elapsedSinceLastPuff.collectAsStateWithLifecycle()
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -176,6 +184,31 @@ fun RegisterActionButton(
             style = FumeiType.eyebrow.copy(fontSize = 11.sp),
             color = AppColors.Smoke400,
         )
+        val label = elapsedLabel
+        if (label != null) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.testTag("elapsed_counter"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Há ",
+                    style = FumeiType.body.copy(fontSize = 12.sp),
+                    color = AppColors.Smoke400,
+                )
+                Text(
+                    text = label,
+                    style = FumeiType.timestamp.copy(fontSize = 13.sp),
+                    color = AppColors.Ember300,
+                    modifier = Modifier.testTag("elapsed_since_last_puff"),
+                )
+                Text(
+                    text = " desde o último registro",
+                    style = FumeiType.body.copy(fontSize = 12.sp),
+                    color = AppColors.Smoke400,
+                )
+            }
+        }
     }
 }
 

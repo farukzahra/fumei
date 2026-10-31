@@ -4,6 +4,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -75,6 +76,8 @@ class PuffRepository(private val dao: PuffDao) {
     suspend fun countAllPuffs(): Int = dao.countAll()
 
     fun observeAllPuffs(): Flow<List<PuffEntity>> = dao.observeAllPuffs()
+
+    fun observeLatestPuffAt(): Flow<Long?> = dao.observeLatestPuff().map { it?.timestamp }
 
     suspend fun allPuffs(): List<PuffEntity> = dao.observeAllPuffs().first()
 

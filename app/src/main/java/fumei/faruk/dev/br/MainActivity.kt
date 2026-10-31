@@ -116,6 +116,7 @@ class MainActivity : ComponentActivity() {
                     aboutState = aboutState,
                     dailyGoal = dailyGoal,
                     defaultGramsPerSession = defaultGrams,
+                    elapsedSinceLastPuff = mainViewModel.elapsedSinceLastPuff,
                     onFumeiClick = mainViewModel::onFumeiClick,
                     onEditPuff = mainViewModel::onEditPuff,
                     onDeletePuff = mainViewModel::onDeletePuff,

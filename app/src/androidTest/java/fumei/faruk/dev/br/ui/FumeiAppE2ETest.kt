@@ -3,6 +3,7 @@ package fumei.faruk.dev.br.ui
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
@@ -14,6 +15,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -25,10 +27,13 @@ import fumei.faruk.dev.br.ui.theme.FumeiTheme
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.Duration
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -396,6 +401,78 @@ class FumeiAppE2ETest {
         composeTestRule.onNodeWithText("1 de 10").assertIsDisplayed()
     }
 
+    @Test
+    fun elapsedCounter_showsTimeSinceLastRecordEvenFromAPreviousDay() {
+        runBlocking {
+            repository.addPuff(Instant.now().minus(Duration.ofHours(26)))
+        }
+        setFumeiApp()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("elapsed_since_last_puff")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithTag("elapsed_since_last_puff")
+            .assertTextContains("26h", substring = true)
+        val label = elapsedCounterText()
+        assertTrue("formato inesperado: $label", label.matches(Regex("\\d+h\\d{2}m\\d{2}s")))
+    }
+
+    @Test
+    fun elapsedCounter_restartsAfterRegistering() {
+        runBlocking {
+            repository.addPuff(Instant.now().minus(Duration.ofHours(3)))
+        }
+        setFumeiApp()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("elapsed_since_last_puff")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithTag("elapsed_since_last_puff")
+            .assertTextContains("3h", substring = true)
+
+        composeTestRule.onNodeWithTag("fumei_button").performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithText("0h00m", substring = true)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithTag("elapsed_since_last_puff")
+            .assertTextContains("0h00m", substring = true)
+    }
+
+    @Test
+    fun elapsedCounter_ticksWhileTheScreenStaysOpen() {
+        runBlocking {
+            repository.addPuff(Instant.now().minus(Duration.ofMinutes(5)))
+        }
+        setFumeiApp()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("elapsed_since_last_puff")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+        val firstLabel = elapsedCounterText()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            elapsedCounterText() != firstLabel
+        }
+    }
+
+    @Test
+    fun elapsedCounter_isHiddenWithoutRecords() {
+        setFumeiApp()
+
+        composeTestRule.onNodeWithText("Toque para registrar").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("elapsed_since_last_puff").assertDoesNotExist()
+    }
+
+    private fun elapsedCounterText(): String {
+        val node = composeTestRule.onNodeWithTag("elapsed_since_last_puff").fetchSemanticsNode()
+        return node.config[SemanticsProperties.Text].joinToString("")
+    }
+
     private fun seedPuffsForCurrentMonth(count: Int) {
         val zone = ZoneId.systemDefault()
         val start = LocalDate.now(zone).atStartOfDay(zone).toInstant().toEpochMilli()
@@ -439,6 +516,7 @@ class FumeiAppE2ETest {
                     aboutState = aboutState,
                     dailyGoal = dailyGoal,
                     defaultGramsPerSession = defaultGrams,
+                    elapsedSinceLastPuff = mainViewModel.elapsedSinceLastPuff,
                     onFumeiClick = mainViewModel::onFumeiClick,
                     onEditPuff = mainViewModel::onEditPuff,
                     onDeletePuff = mainViewModel::onDeletePuff,

@@ -127,6 +127,7 @@ class UpdateFlowE2ETest {
                     ),
                     dailyGoal = 8,
                     defaultGramsPerSession = 0.3,
+                    elapsedSinceLastPuff = MutableStateFlow(null),
                     onFumeiClick = {},
                     onEditPuff = { _, _, _ -> },
                     onDeletePuff = {},

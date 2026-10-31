@@ -53,4 +53,7 @@ interface PuffDao {
 
     @Query("SELECT * FROM puffs ORDER BY timestamp ASC")
     fun observeAllPuffs(): Flow<List<PuffEntity>>
+
+    @Query("SELECT * FROM puffs ORDER BY timestamp DESC LIMIT 1")
+    fun observeLatestPuff(): Flow<PuffEntity?>
 }

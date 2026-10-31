@@ -120,7 +120,7 @@ private fun AboutHeroCard(
         title = "Fumei",
     ) {
         Text(
-            text = "Contador de sessões de cannabis no vaporizador. Veja o tempo entre sessões, a média mensal, as gramas do dia, as estatísticas e exporte tudo em CSV. Tudo offline.",
+            text = "Contador de sessões de cannabis no vaporizador. A tela inicial mostra há quanto tempo foi o último registro, o tempo entre sessões, a média mensal e as gramas do dia. As estatísticas exportam tudo em CSV. Tudo offline.",
             style = FumeiType.body.copy(fontSize = 14.sp),
             color = AppColors.Smoke400,
         )
