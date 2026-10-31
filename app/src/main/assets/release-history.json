@@ -1,8 +1,17 @@
 {
-    "currentVersion":  "1.3.0",
-    "versionCode":  23,
-    "updatedAt":  "2026-10-04T15:03:04.198Z",
+    "currentVersion":  "1.4.0",
+    "versionCode":  24,
+    "updatedAt":  "2026-10-31T19:50:26.038Z",
     "entries":  [
+                    {
+                        "version":  "1.4.0",
+                        "versionCode":  24,
+                        "date":  "2026-10-31",
+                        "title":  "Contador ao vivo desde o último registro",
+                        "summary":  "A tela inicial mostra há quanto tempo foi o último registro, com horas, minutos e segundos. O contador continua certo mesmo de um dia para o outro.",
+                        "type":  "feat",
+                        "commit":  null
+                    },
                     {
                         "version":  "1.3.0",
                         "versionCode":  23,

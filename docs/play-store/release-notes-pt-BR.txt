@@ -1,1 +1,1 @@
-O resumo das estatísticas ficou mais claro: sessões e gramas com rótulo, e a média entre sessões do mesmo dia em destaque. Agora você também exporta seus registros em CSV, na visão de mês, ano ou tudo.
+O contador da tela inicial agora mostra há quanto tempo foi o último registro, com horas, minutos e segundos. Ele continua certo mesmo quando você abre o app depois de um dia inteiro.
