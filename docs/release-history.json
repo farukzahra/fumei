@@ -10,7 +10,7 @@
                         "title":  "Contador ao vivo desde o último registro",
                         "summary":  "A tela inicial mostra há quanto tempo foi o último registro, com horas, minutos e segundos. O contador continua certo mesmo de um dia para o outro.",
                         "type":  "feat",
-                        "commit":  null
+                        "commit":  "18df808"
                     },
                     {
                         "version":  "1.3.0",
