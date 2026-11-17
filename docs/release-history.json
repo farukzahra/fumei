@@ -10,7 +10,7 @@
                         "title":  "Fale conosco direto do app",
                         "summary":  "A mensagem do Fale conosco agora sai direto do app para o desenvolvedor, sem abrir o app de e-mail. Se o envio falhar, dá para tentar de novo ou usar o e-mail.",
                         "type":  "feat",
-                        "commit":  null
+                        "commit":  "67d96f8"
                     },
                     {
                         "version":  "1.4.0",
