@@ -11,6 +11,16 @@ Antes de implementar feature ou bugfix:
 3. **verification-before-completion** — rodar comandos e citar evidência antes de dizer que passou
 4. **humanizer** — ao escrever textos de UI/marketing; sem travessão (—), tom direto
 
+## Chaves e segredos
+
+Toda chave, token ou senha recebida vai para o cofre `C:\repo\secrets` antes de
+qualquer uso, e o índice em `C:\Users\T-GAMER\.config\opencode\AGENTS.md` é
+atualizado. Valor inteiro nunca vai para chat, commit, PR ou issue.
+
+O Fale conosco usa a access key do Web3Forms em
+`C:\repo\secrets\projects\web3forms.env` (`WEB3FORMS_ACCESS_KEY`). A chave é
+pública por design e vai dentro do APK; não é segredo de servidor.
+
 ## Testes
 
 | Tipo | Pasta | Comando |

@@ -1,8 +1,17 @@
 {
-    "currentVersion":  "1.4.0",
-    "versionCode":  24,
-    "updatedAt":  "2026-10-31T19:50:26.038Z",
+    "currentVersion":  "1.5.0",
+    "versionCode":  25,
+    "updatedAt":  "2026-11-17T12:11:55.290Z",
     "entries":  [
+                    {
+                        "version":  "1.5.0",
+                        "versionCode":  25,
+                        "date":  "2026-11-17",
+                        "title":  "Fale conosco direto do app",
+                        "summary":  "A mensagem do Fale conosco agora sai direto do app para o desenvolvedor, sem abrir o app de e-mail. Se o envio falhar, dá para tentar de novo ou usar o e-mail.",
+                        "type":  "feat",
+                        "commit":  null
+                    },
                     {
                         "version":  "1.4.0",
                         "versionCode":  24,

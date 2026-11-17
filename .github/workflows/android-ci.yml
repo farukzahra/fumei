@@ -43,5 +43,5 @@ jobs:
       - name: Assemble debug APK
         run: ./gradlew assembleDebug --no-daemon
 
-      - name: Check the app keeps no internet permission
-        run: python scripts/check_no_internet_permission.py
+      - name: Check the network policy
+        run: python scripts/check_network_policy.py

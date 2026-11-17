@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +72,7 @@ fun AboutScreen(
     modifier: Modifier = Modifier,
 ) {
     var historyExpanded by remember { mutableStateOf(false) }
+    var showContact by rememberSaveable { mutableStateOf(false) }
 
     LazyColumn(
         modifier = modifier
@@ -101,12 +104,19 @@ fun AboutScreen(
             SupportSection(pixKey = uiState.pixKey)
         }
         item {
+            ContactSection(onOpen = { showContact = true })
+        }
+        item {
             ReleaseHistorySection(
                 entries = uiState.entries,
                 expanded = historyExpanded,
                 onToggle = { historyExpanded = !historyExpanded },
             )
         }
+    }
+
+    if (showContact) {
+        ContactDialog(onDismiss = { showContact = false })
     }
 }
 
@@ -283,6 +293,36 @@ private fun SupportSection(
             style = FumeiType.body.copy(fontSize = 13.sp),
             color = AppColors.Smoke400,
         )
+    }
+}
+
+@Composable
+private fun ContactSection(
+    onOpen: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AboutSectionCard(
+        modifier = modifier
+            .testTag("about_contact_card")
+            .clickable(onClick = onOpen),
+        title = "Fale conosco",
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.MailOutline,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = AppColors.Ember500,
+            )
+            Text(
+                text = "Sugestão, reclamação ou ideia. Abre no seu app de e-mail.",
+                style = FumeiType.body.copy(fontSize = 14.sp),
+                color = AppColors.Smoke400,
+            )
+        }
     }
 }
 
