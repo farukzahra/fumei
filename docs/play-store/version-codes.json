@@ -1,10 +1,10 @@
 {
     "package":  "fumei.faruk.dev.br",
-    "playStoreMaxVersionCode":  24,
-    "nextVersionCode":  26,
+    "playStoreMaxVersionCode":  25,
+    "nextVersionCode":  27,
     "publicVersionName":  "1.5.0",
-    "publicLaunchVersionCode":  25,
-    "updatedAt":  "2026-11-17T12:11:55.320Z",
+    "publicLaunchVersionCode":  26,
+    "updatedAt":  "2026-11-17T15:58:29.284Z",
     "note":  "versionCode (Play) e versionName (semver público) são faixas separadas. Lançamento público 1.0.0 = code 13. Ver versioning.md.",
     "releases":  [
                      {
@@ -170,8 +170,15 @@
                          "versionCode":  25,
                          "versionName":  "1.5.0",
                          "date":  "2026-11-17",
+                         "playStore":  "dev",
+                         "note":  "Build de desenvolvimento, nao enviado ao Play"
+                     },
+                     {
+                         "versionCode":  26,
+                         "versionName":  "1.5.0",
+                         "date":  "2026-11-17",
                          "playStore":  "current",
-                         "note":  "Fale conosco com envio direto (Web3Forms)"
+                         "note":  "Gerado por bump-version-code.ps1 / play-release.ps1"
                      }
                  ]
 }

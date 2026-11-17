@@ -1,13 +1,13 @@
 {
-    "aabSizeBytes":  3267141,
-    "versionName":  "1.4.0",
-    "releaseNotes":  "O contador da tela inicial agora mostra há quanto tempo foi o último registro, com horas, minutos e segundos. Ele continua certo mesmo quando você abre o app depois de um dia inteiro.",
-    "generatedAt":  "2026-10-31T19:51:27.757Z",
-    "versionCode":  24,
+    "aabSizeBytes":  3291408,
+    "versionName":  "1.5.0",
+    "releaseNotes":  "O Fale conosco agora envia a mensagem direto do app. Você escreve, toca em Enviar e pronto. Se o envio falhar, o app oferece tentar de novo ou usar o e-mail.",
+    "generatedAt":  "2026-11-17T15:59:21.842Z",
+    "versionCode":  26,
     "aabPath":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
     "playConsole":  {
                         "arquivo":  "C:\\repo\\fumei\\app\\build\\outputs\\bundle\\release\\app-release.aab",
-                        "nomeDaVersao":  "1.4.0",
-                        "notasDaVersao":  "O contador da tela inicial agora mostra há quanto tempo foi o último registro, com horas, minutos e segundos. Ele continua certo mesmo quando você abre o app depois de um dia inteiro."
+                        "nomeDaVersao":  "1.5.0",
+                        "notasDaVersao":  "O Fale conosco agora envia a mensagem direto do app. Você escreve, toca em Enviar e pronto. Se o envio falhar, o app oferece tentar de novo ou usar o e-mail."
                     }
 }
